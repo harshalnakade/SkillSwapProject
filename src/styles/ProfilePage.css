@@ -1,94 +1,155 @@
-/* Reuse LandingPage styles for consistency */
-@import "./LandingPage.css";
+/* src/styles/ProfilePage.css */
 
-/* Profile page content wrapper */
-.profile-content {
-  flex: 1;
-  margin-left: 210px; /* sidebar width */
-  padding: 40px 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
+/* === VARIABLES & GLOBAL STYLES === */
+:root {
+  --primary-blue: #2563eb;
+  --primary-blue-dark: #1d4ed8;
+  --background-light: #f8fafc;
+  --card-background: #ffffff;
+  --text-dark: #1e293b;
+  --text-medium: #475569;
+  --text-light: #64748b;
+  --border-color: #e2e8f0;
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 }
 
-/* User info card */
-.user-info {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
+/* === MAIN LAYOUT === */
+.profile-page-container {
+  background-color: var(--background-light);
+  font-family: 'Inter', sans-serif;
 }
 
-.user-info .avatar {
-  width: 120px;
-  height: 120px;
+.profile-main-content {
+  margin-left: 260px; /* Must match sidebar width */
+  padding: 2.5rem;
+}
+
+/* === PROFILE HEADER & BANNER === */
+.profile-header {
+  background-color: var(--card-background);
+  border-radius: 16px;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 2rem;
+}
+.profile-banner {
+  height: 220px;
+  background: linear-gradient(135deg, #2563eb, #38bdf8);
+  border-radius: 16px 16px 0 0;
+}
+.profile-details-wrapper {
+  padding: 0 2rem 1.5rem 2rem;
+  display: flex;
+  align-items: flex-end;
+  position: relative;
+}
+.profile-avatar-container {
+  margin-top: -75px; /* Pulls avatar up */
+  border: 6px solid var(--card-background);
   border-radius: 50%;
-  margin-bottom: 16px;
-  border: 3px solid var(--skill-blue);
+  background-color: var(--card-background);
 }
-
-/* Skills section */
-.skills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 12px;
+.profile-avatar { width: 150px; height: 150px; border-radius: 50%; }
+.profile-info { margin-left: 1.5rem; flex-grow: 1; }
+.user-name {
+  font-size: 2rem; font-weight: 700; color: var(--text-dark);
+  margin-bottom: 0.25rem;
 }
+.user-meta { display: flex; gap: 1.5rem; color: var(--text-light); }
+.user-meta span { display: flex; align-items: center; gap: 0.5rem; }
 
-.badge {
-  background-color: var(--skill-emerald);
-  color: white;
-  padding: 6px 12px;
-  border-radius: 12px;
-  font-size: 0.9rem;
+.btn-edit-profile {
+  background-color: var(--primary-blue); color: white; padding: 10px 20px;
+  font-size: 0.9rem; font-weight: 600; border-radius: 8px; cursor: pointer;
+  border: none; transition: all 0.2s;
 }
+.btn-edit-profile:hover { background-color: var(--primary-blue-dark); transform: translateY(-2px); }
 
-/* Sessions section */
-.sessions {
-  list-style: none;
-  padding: 0;
-  margin-top: 12px;
+/* === STATS BAR === */
+.stats-bar {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem; margin-bottom: 2rem;
 }
+.stat-item {
+  background: var(--card-background); padding: 1.5rem;
+  border-radius: 12px; box-shadow: var(--shadow-md); text-align: center;
+}
+.stat-value { font-size: 1.75rem; font-weight: 700; color: var(--text-dark); display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+.star-icon { color: #f59e0b; }
+.stat-label { font-size: 0.9rem; color: var(--text-light); margin-top: 0.25rem; }
 
+/* === MAIN CONTENT GRID === */
+.profile-content-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 2rem; align-items: start;
+}
+.profile-left-column, .profile-right-column {
+  display: flex; flex-direction: column; gap: 2rem;
+}
+.profile-card {
+  background-color: var(--card-background); border-radius: 16px;
+  padding: 1.5rem; box-shadow: var(--shadow-md);
+}
+.card-title {
+  font-size: 1.25rem; font-weight: 600; color: var(--text-dark);
+  margin: 0 0 1rem 0; padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+}
+.user-bio { color: var(--text-medium); line-height: 1.6; margin: 0;}
+
+/* === SKILLS & SESSIONS & REVIEWS === */
+.skills-container { display: flex; flex-wrap: wrap; gap: 12px; }
+.skill-badge {
+  display: flex; align-items: center; background-color: var(--background-light);
+  border: 1px solid var(--border-color); border-radius: 20px; overflow: hidden;
+  font-size: 0.9rem; font-weight: 500;
+}
+.skill-name { padding: 8px 14px; color: var(--text-dark); }
+.skill-level { padding: 8px 14px; color: white; }
+.skill-level.advanced { background-color: #10b981; }
+.skill-level.intermediate { background-color: #f59e0b; }
+.skill-level.beginner { background-color: #6366f1; }
+
+.sessions-list { list-style: none; padding: 0; margin: 0; }
 .session-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 12px;
-  border-bottom: 1px solid #ddd;
+    display: flex; align-items: center; gap: 1rem;
+    padding: 0.75rem 0;
+}
+.session-item:not(:last-child) { border-bottom: 1px solid var(--border-color); }
+.status-dot { width: 10px; height: 10px; border-radius: 50%; }
+.status-dot.completed { background-color: #10b981; }
+.status-dot.upcoming { background-color: #3b82f6; }
+.session-info { display: flex; justify-content: space-between; flex-grow: 1; }
+.session-title { font-weight: 500; color: var(--text-medium); }
+.session-date { color: var(--text-light); font-size: 0.9rem; }
+
+.reviews-container { display: flex; flex-direction: column; gap: 1.5rem; }
+.review-item {
+    background-color: var(--background-light); padding: 1rem;
+    border-radius: 8px; border-left: 4px solid var(--primary-blue);
+}
+.quote-icon { color: var(--border-color); margin-bottom: 0.5rem; }
+.review-quote { margin: 0 0 1rem 0; font-style: italic; color: var(--text-medium); }
+.reviewer-info { display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; font-weight: 500; color: var(--text-dark); }
+.reviewer-avatar {
+  width: 32px; /* Adjusted size */
+  height: 32px; /* Adjusted size */
+  border-radius: 50%;
+  object-fit: cover; /* Ensures avatar image fills the space nicely */
 }
 
-.session-item .date {
-  color: var(--text-gray);
-  font-size: 0.85rem;
+/* === RESPONSIVE DESIGN === */
+@media (max-width: 1200px) {
+    .profile-content-grid { grid-template-columns: 1fr; }
 }
-
-/* Feature cards inherit LandingPage styling */
-.feature-card {
-  max-width: 600px;
-  margin: 0 auto;
-  text-align: center;
+@media (max-width: 992px) {
+  .profile-main-content { margin-left: 70px; }
+  .profile-details-wrapper { flex-direction: column; align-items: center; text-align: center; }
+  .profile-info { margin-left: 0; margin-top: 1rem; }
+  .user-meta { justify-content: center; }
+  .btn-edit-profile { margin-top: 1rem; }
 }
-
-.feature-card h3 {
-  margin-bottom: 12px;
-}
-
-.feature-card p {
-  color: var(--text-gray);
-}
-
-/* Buttons */
-.btn-primary {
-  background: var(--skill-blue);
-  color: white;
-  padding: 10px 24px;
-  font-size: 1rem;
-  border-radius: 8px;
-  cursor: pointer;
-  border: none;
-  margin-top: 16px;
-}
-
-.btn-primary:hover {
-  background: #0b5fa5;
+@media (max-width: 768px) {
+  .profile-main-content { margin-left: 0; padding: 1.5rem; }
+  .stats-bar { grid-template-columns: 1fr; }
 }
