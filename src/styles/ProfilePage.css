@@ -1,0 +1,115 @@
+.profile-page {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Card Styles */
+.card {
+  background: #fff;
+  padding: 20px 25px;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* User Info */
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-details {
+  flex: 1;
+}
+
+.user-details h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.user-details p {
+  margin: 5px 0 0 0;
+  color: #555;
+}
+
+/* Edit button */
+.btn-edit {
+  padding: 8px 16px;
+  background-color: #4f46e5;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.btn-edit:hover {
+  background-color: #3730a3;
+}
+
+/* Skills */
+.skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.badge {
+  background-color: #e0e7ff;
+  color: #4338ca;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+/* Sessions */
+.sessions {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.session-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.session-item:last-child {
+  border-bottom: none;
+}
+
+.date {
+  color: #888;
+  font-size: 0.875rem;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .user-info {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .btn-edit {
+    width: 100%;
+    text-align: center;
+  }
+}
