@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { EditProfileModal } from "../components/models/EditProfileModel";
+import "../styles/ProfilePage.css";
 
 // Mock user data
 const mockUser = {

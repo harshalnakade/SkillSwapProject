@@ -1,84 +1,98 @@
+/* Profile Page Layout */
 .profile-page {
   max-width: 900px;
-  margin: 40px auto;
-  padding: 0 20px;
+  margin: 2rem auto;
+  padding: 1rem;
+  font-family: Arial, sans-serif;
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  font-family: 'Inter', sans-serif;
+  gap: 2rem;
 }
 
 /* Card Styles */
 .card {
-  background: #fff;
-  padding: 20px 25px;
-  border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  background-color: #fff;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
 }
 
-/* User Info */
+/* User Info Card */
 .user-info {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 1.5rem;
 }
 
-.avatar {
-  width: 100px;
-  height: 100px;
+.user-info .avatar {
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   object-fit: cover;
-}
-
-.user-details {
-  flex: 1;
+  border: 2px solid #3b82f6;
 }
 
 .user-details h2 {
   margin: 0;
   font-size: 1.5rem;
   font-weight: 600;
+  color: #111827;
 }
 
 .user-details p {
-  margin: 5px 0 0 0;
-  color: #555;
+  margin: 0.25rem 0 0 0;
+  font-size: 0.9rem;
+  color: #6b7280;
 }
 
-/* Edit button */
+/* Edit Profile Button */
 .btn-edit {
-  padding: 8px 16px;
-  background-color: #4f46e5;
-  color: white;
+  margin-left: auto;
+  padding: 0.5rem 1rem;
   border: none;
-  border-radius: 8px;
+  background-color: #3b82f6;
+  color: white;
+  font-weight: 600;
+  border-radius: 0.375rem;
   cursor: pointer;
-  font-weight: 500;
-  transition: 0.2s;
+  transition: background-color 0.2s;
 }
 
 .btn-edit:hover {
-  background-color: #3730a3;
+  background-color: #2563eb;
 }
 
-/* Skills */
+/* Skills Card */
+.skills-card h3 {
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+}
+
 .skills {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 10px;
+  gap: 0.5rem;
 }
 
 .badge {
-  background-color: #e0e7ff;
-  color: #4338ca;
-  padding: 5px 12px;
-  border-radius: 20px;
-  font-weight: 500;
+  background-color: #e0f2fe; /* light blue */
+  color: #0369a1;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
   font-size: 0.875rem;
+  font-weight: 500;
 }
 
-/* Sessions */
+/* Sessions Card */
+.sessions-card h3 {
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+}
+
 .sessions {
   list-style: none;
   padding: 0;
@@ -88,28 +102,66 @@
 .session-item {
   display: flex;
   justify-content: space-between;
-  padding: 10px 0;
-  border-bottom: 1px solid #eee;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .session-item:last-child {
   border-bottom: none;
 }
 
-.date {
-  color: #888;
-  font-size: 0.875rem;
+.session-item span {
+  font-size: 0.9rem;
+  color: #374151;
 }
 
-/* Responsive */
-@media (max-width: 600px) {
-  .user-info {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+.session-item .date {
+  color: #6b7280;
+  font-size: 0.85rem;
+}
 
-  .btn-edit {
-    width: 100%;
-    text-align: center;
-  }
+/* Modal Overlay (if used inside EditProfileModal) */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+}
+
+.modal-content {
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  width: 90%;
+  max-width: 400px;
+}
+
+.modal-content h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.modal-content p {
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  color: #374151;
+}
+
+.modal-content button {
+  padding: 0.5rem 1rem;
+  border: none;
+  background-color: #3b82f6;
+  color: white;
+  font-weight: 600;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.modal-content button:hover {
+  background-color: #2563eb;
 }
