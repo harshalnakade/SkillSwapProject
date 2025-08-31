@@ -1,4 +1,3 @@
-// src/pages/LoginPage.jsx
 
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
@@ -18,7 +17,6 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
   
-  // === NEW: State for new features ===
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
@@ -27,12 +25,11 @@ export default function LoginPage() {
     name: "",
     email: "",
     password: "",
-    confirmPassword: "", // For signup validation
+    confirmPassword: "",
     rememberMe: false,
     roles: [],
   });
   
-  // === NEW: Real-time validation logic ===
   const validateField = (name, value) => {
     let error = "";
     if (name === "name" && !value) error = "Full Name is required.";
@@ -70,7 +67,6 @@ export default function LoginPage() {
     e.preventDefault();
     setIsLoading(true);
 
-    // Final validation check before submit
     const formErrors = {};
     if (!isLogin) {
       if (!formData.name) formErrors.name = "Full Name is required.";
@@ -87,7 +83,6 @@ export default function LoginPage() {
       return;
     }
     
-    // Simulate API call
     setTimeout(() => {
         console.log("Form submitted successfully:", formData);
         setIsLoading(false);

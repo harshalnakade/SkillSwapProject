@@ -1,13 +1,13 @@
-// src/components/Sidebar.jsx
 
 import { Link, NavLink } from "react-router-dom";
-import { LayoutDashboard, User, BookOpen, Calendar, MessageSquare, PlusCircle, LogOut } from 'lucide-react';
-import './Sidebar.css'; // We'll use the new CSS below
+import { LayoutDashboard, BookOpen, Calendar, MessageSquare, PlusCircle, LogOut, Search } from 'lucide-react';
+import './Sidebar.css';
 
-// Mock user data (in a real app, this would come from context or props)
+// Mock user data now includes roles for conditional rendering
 const mockUser = {
   name: "Harshal Nakade",
   avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Harshal",
+  roles: ['learner', 'teacher'], // This user can both learn and teach
 };
 
 export default function Sidebar() {
@@ -23,58 +23,46 @@ export default function Sidebar() {
         {/* === Main Navigation === */}
         <ul className="sidebar-menu">
           <li><p className="menu-title">MENU</p></li>
-          <li>
-            <NavLink to="/dashboard" className="menu-item">
-              <LayoutDashboard size={20} />
-              <span>Dashboard</span>
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/skills" className="menu-item">
-              <BookOpen size={20} />
-              <span>Explore Skills</span>
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/sessions" className="menu-item">
-              <Calendar size={20} />
-              <span>My Sessions</span>
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/messages" className="menu-item">
-              <MessageSquare size={20} />
-              <span>Messages</span>
-            </NavLink>
-          </li>
+          <li><NavLink to="/dashboard" className="menu-item"><LayoutDashboard size={20} /><span>Dashboard</span></NavLink></li>
+          <li><NavLink to="/skills" className="menu-item"><BookOpen size={20} /><span>Explore Skills</span></NavLink></li>
+          <li><NavLink to="/sessions" className="menu-item"><Calendar size={20} /><span>My Sessions</span></NavLink></li>
+          <li><NavLink to="/messages" className="menu-item"><MessageSquare size={20} /><span>Messages</span></NavLink></li>
         </ul>
 
-        {/* === Quick Actions === */}
+        {/* === Quick Actions (Now functional and role-based) === */}
         <div className="quick-actions">
            <p className="menu-title">QUICK ACTIONS</p>
-           <button className="action-btn">
-             <PlusCircle size={20} />
-             <span>Offer a New Skill</span>
-           </button>
-           <button className="action-btn secondary">
-             <span>Request a Session</span>
-           </button>
+           
+           {/* This button only shows if the user is a 'teacher' */}
+           {mockUser.roles.includes('teacher') && (
+             <Link to="/offer-skill" className="action-btn">
+               <PlusCircle size={20} />
+               <span>Offer a New Skill</span>
+             </Link>
+           )}
+
+           {/* This button only shows if the user is a 'learner' */}
+           {mockUser.roles.includes('learner') && (
+            <Link to="/skills" className="action-btn secondary">
+               <Search size={20} />
+               <span>Find a Mentor</span>
+            </Link>
+           )}
         </div>
       </div>
 
-
       {/* === Sidebar Footer with User Profile === */}
       <div className="sidebar-footer">
-        <Link to="/profile" className="user-profile-link">
+        <NavLink to="/profile" className="user-profile-link">
           <img src={mockUser.avatar} alt={mockUser.name} className="user-avatar" />
           <div className="user-info">
             <span className="user-name">{mockUser.name}</span>
             <span className="user-role">View Profile</span>
           </div>
-        </Link>
-        <button className="logout-btn">
+        </NavLink>
+        <Link to="/" className="logout-btn">
             <LogOut size={20} />
-        </button>
+        </Link>
       </div>
     </nav>
   );

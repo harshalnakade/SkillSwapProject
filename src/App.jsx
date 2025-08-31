@@ -6,6 +6,7 @@ import ProfilePage from "./pages/ProfilePage";
 import SkillListings from "./pages/SkillListings";
 import Sessions from "./pages/Sessions";
 import Messages from "./pages/Messages";
+import OfferSkillPage from "./pages/OfferSkillpage";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/skills" element={<SkillListings />} />
         <Route path="/sessions" element={<Sessions />} />
         <Route path="/messages" element={<Messages />} />
+        <Route path="/offer-skill" element={<OfferSkillPage/>} />
       </Routes>
     </BrowserRouter>
   );
