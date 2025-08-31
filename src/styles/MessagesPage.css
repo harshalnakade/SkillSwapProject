@@ -1,0 +1,33 @@
+/* Reuse LandingPage styles for consistency */
+@import "./LandingPage.css";
+
+/* Main content wrapper */
+.messages-content {
+  flex: 1;
+  margin-left: 210px; /* sidebar width */
+  padding: 40px 24px;
+}
+
+/* Page title */
+.messages-content h1 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Chat container */
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 600px;
+}
+
+/* Optional: style ChatBubble if needed */
+.chat-container .chat-bubble.me {
+  align-self: flex-end;
+}
+
+.chat-container .chat-bubble.other {
+  align-self: flex-start;
+}

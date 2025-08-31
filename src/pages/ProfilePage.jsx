@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Sidebar from "../components/Sidebar";
 import { EditProfileModal } from "../components/models/EditProfileModel";
 import "../styles/ProfilePage.css";
 
@@ -22,45 +23,46 @@ export default function ProfilePage() {
   const [editOpen, setEditOpen] = useState(false);
 
   return (
-    <div className="profile-page">
-      {/* User Info Card */}
-      <div className="card user-info">
-        <img className="avatar" src={mockUser.avatar} alt={mockUser.name} />
-        <div className="user-details">
+    <div className="landing-page">
+      <Sidebar />
+
+      <div className="profile-content">
+        {/* User Info Card */}
+        <div className="feature-card user-info">
+          <img className="avatar" src={mockUser.avatar} alt={mockUser.name} />
           <h2>{mockUser.name}</h2>
           <p>{mockUser.bio}</p>
+          <button className="btn-primary" onClick={() => setEditOpen(true)}>
+            Edit Profile
+          </button>
         </div>
-        <button className="btn-edit" onClick={() => setEditOpen(true)}>
-          Edit Profile
-        </button>
-      </div>
 
-      {/* Skills Card */}
-      <div className="card skills-card">
-        <h3>My Skills</h3>
-        <div className="skills">
-          {mockUser.skills.map((skill) => (
-            <span key={skill.id} className="badge">
-              {skill.name} • {skill.level}
-            </span>
-          ))}
+        {/* Skills Card */}
+        <div className="feature-card skills-card">
+          <h3>My Skills</h3>
+          <div className="skills">
+            {mockUser.skills.map((skill) => (
+              <span key={skill.id} className="badge">
+                {skill.name} • {skill.level}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Sessions Card */}
+        <div className="feature-card sessions-card">
+          <h3>My Sessions</h3>
+          <ul className="sessions">
+            {mockUser.sessions.map((session) => (
+              <li key={session.id} className="session-item">
+                <span>{session.title}</span>
+                <span className="date">{session.date}</span>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
 
-      {/* Sessions Card */}
-      <div className="card sessions-card">
-        <h3>My Sessions</h3>
-        <ul className="sessions">
-          {mockUser.sessions.map((session) => (
-            <li key={session.id} className="session-item">
-              <span>{session.title}</span>
-              <span className="date">{session.date}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Edit Profile Modal */}
       <EditProfileModal open={editOpen} onOpenChange={setEditOpen} />
     </div>
   );
