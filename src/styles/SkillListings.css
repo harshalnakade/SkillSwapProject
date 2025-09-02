@@ -1,41 +1,79 @@
 /* src/styles/SkillListings.css */
 
 /* === GENERAL LAYOUT & HEADER === */
-.skills-page-container { background-color: #f8fafc; font-family: 'Inter', sans-serif; }
-.skills-main-content { margin-left: 260px; padding: 2.5rem; min-height: 100vh; }
-.skills-header { margin-bottom: 2rem; }
-.skills-title { font-size: 2.5rem; font-weight: 700; color: #1e293b; margin-bottom: 0.5rem; }
-.skills-subtitle { font-size: 1.125rem; color: #64748b; }
+.skills-page-container {
+  font-family: 'Inter', sans-serif;
+}
+.skills-main-content {
+  padding: 2.5rem;
+  min-height: 100vh;
+}
+.skills-header {
+  margin-bottom: 2rem;
+}
+.skills-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+}
+.skills-subtitle {
+  font-size: 1.125rem;
+  color: #64748b;
+}
 
 /* === FILTERS BAR === */
 .filters-bar {
-  display: flex; flex-wrap: wrap; gap: 1rem; padding: 1rem;
-  background-color: #ffffff; border-radius: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #ffffff;
+  border-radius: 12px;
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  margin-bottom: 2.5rem; align-items: center;
+  margin-bottom: 2.5rem;
+  align-items: center;
 }
 .filter-group {
-  display: flex; align-items: center; gap: 0.75rem;
-  background-color: #f8fafc; border: 1px solid #e2e8f0;
-  border-radius: 8px; padding: 0.65rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.65rem 1rem;
 }
-.filter-icon { color: #94a3b8; }
-.filter-group.search-filter { flex-grow: 1; }
+.filter-icon {
+  color: #94a3b8;
+}
+.filter-group.search-filter {
+  flex-grow: 1;
+}
 .filters-bar input, .filters-bar select {
-  border: none; background: transparent; outline: none; font-size: 1rem;
-  color: #334155; width: 100%;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 1rem;
+  color: #334155;
+  width: 100%;
 }
-.filters-bar select { cursor: pointer; }
+.filters-bar select {
+  cursor: pointer;
+}
 
 /* === SKILLS GRID & CARDS === */
 .skills-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
   gap: 2rem;
 }
 .skill-card {
-  background-color: #ffffff; border-radius: 16px;
+  background-color: #ffffff;
+  border-radius: 16px;
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  display: flex; flex-direction: column; cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
   border: 1px solid transparent;
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
@@ -44,95 +82,324 @@
   border-color: #2563eb;
   box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 }
-.skill-card-header, .skill-card-body, .skill-card-footer { padding: 1.25rem 1.5rem; }
-.skill-card-header { display: flex; justify-content: space-between; align-items: center; }
-.teacher-info { display: flex; align-items: center; gap: 0.75rem; }
-.teacher-avatar { width: 40px; height: 40px; border-radius: 50%; }
-.teacher-name { font-weight: 600; color: #334155; }
+.skill-card-header, .skill-card-body, .skill-card-footer {
+  padding: 1.25rem 1.5rem;
+}
+.skill-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.teacher-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.teacher-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+.teacher-name {
+  font-weight: 600;
+  color: #334155;
+}
 .verified-badge {
-    display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.75rem;
-    font-weight: 500; color: #166534; background-color: #f0fdf4;
-    padding: 2px 6px; border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #166534;
+  background-color: #f0fdf4;
+  padding: 2px 6px;
+  border-radius: 12px;
 }
-.skill-rating { display: flex; align-items: center; gap: 0.25rem; font-weight: 600; color: #475569; }
-.star-icon { color: #f59e0b; }
-.skill-card-body { flex-grow: 1; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9; }
-.skill-name { font-size: 1.25rem; font-weight: 600; color: #1e293b; margin-top: 0.5rem; }
-.skill-card-footer { display: flex; justify-content: space-between; align-items: center; }
-.skill-tags { display: flex; gap: 0.5rem; }
-.tag { font-size: 0.8rem; font-weight: 500; padding: 4px 10px; border-radius: 12px; }
+.skill-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-weight: 600;
+  color: #475569;
+}
+.star-icon {
+  color: #f59e0b;
+}
+.skill-card-body {
+  flex-grow: 1;
+  border-top: 1px solid #f1f5f9;
+  border-bottom: 1px solid #f1f5f9;
+}
+.skill-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-top: 0.5rem;
+}
+.skill-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.skill-tags {
+  display: flex;
+  gap: 0.5rem;
+}
+.tag {
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 12px;
+}
 .tag-experience {
-    background-color: #fdf4ff; color: #7e22ce; border: 1px solid #f3e8ff;
-    display: inline-block; margin-bottom: 0.5rem;
+  background-color: #fdf4ff;
+  color: #7e22ce;
+  border: 1px solid #f3e8ff;
+  display: inline-block;
+  margin-bottom: 0.75rem;
 }
-.tag-level { background-color: #eff6ff; color: #1d4ed8; }
-.tag-format { background-color: #f0fdf4; color: #166534; }
-.view-details-link { font-size: 0.9rem; font-weight: 500; color: #2563eb; }
+.tag-level {
+  background-color: #eff6ff;
+  color: #1d4ed8;
+}
+.view-details-link {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #2563eb;
+}
 
 /* === SKILL DETAIL MODAL === */
 .modal-overlay {
-  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-  background-color: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px);
-  display: flex; align-items: center; justify-content: center; z-index: 2000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
   animation: fadeIn 0.3s ease;
 }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 .modal-content {
-  background-color: #ffffff; border-radius: 16px; width: 90%;
-  max-width: 700px; max-height: 90vh; overflow-y: auto;
+  background-color: #ffffff;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 700px;
+  max-height: 90vh;
+  overflow-y: auto;
   box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-  position: relative; padding: 2rem; animation: slideUp 0.3s ease;
+  position: relative;
+  padding: 2rem;
+  animation: slideUp 0.3s ease;
 }
-@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
 .modal-close-btn {
-  position: absolute; top: 16px; right: 16px; background: #f1f5f9;
-  border: none; border-radius: 50%; width: 36px; height: 36px;
-  display: flex; align-items: center; justify-content: center; cursor: pointer;
-  color: #64748b; transition: all 0.2s;
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: #f1f5f9;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #64748b;
+  transition: all 0.2s;
 }
-.modal-close-btn:hover { background-color: #e2e8f0; color: #1e293b; }
-
-.modal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
-.modal-teacher-info { display: flex; align-items: center; gap: 1rem; }
-.modal-teacher-avatar { width: 60px; height: 60px; border-radius: 50%; }
-.modal-teacher-name { font-size: 1.25rem; font-weight: 600; color: #1e293b; margin: 0; }
-.modal-teacher-badges { display: flex; align-items: center; gap: 0.5rem; margin-top: 4px; }
+.modal-close-btn:hover {
+  background-color: #e2e8f0;
+  color: #1e293b;
+}
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+.modal-teacher-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.modal-teacher-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+}
+.modal-teacher-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0;
+}
+.modal-teacher-badges {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 4px;
+}
 .verified-badge-modal, .experience-badge-modal {
-    display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.8rem;
-    font-weight: 500; padding: 2px 8px; border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 12px;
 }
-.verified-badge-modal { color: #166534; background-color: #f0fdf4; }
-.experience-badge-modal { color: #7e22ce; background-color: #fdf4ff; }
-.modal-rating { font-size: 1.25rem; }
-.modal-skill-title { font-size: 2rem; font-weight: 700; margin: 0 0 1rem 0; }
-.modal-teacher-bio { color: #475569; line-height: 1.6; margin-bottom: 2rem; }
-.modal-section { margin-bottom: 2rem; }
-.modal-section-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.5rem; }
-.syllabus-list { list-style: none; padding-left: 0; }
-.syllabus-list li { padding: 0.5rem 0; border-bottom: 1px solid #f1f5f9; color: #334155; }
-.syllabus-list li::before { content: '✓'; color: #2563eb; margin-right: 0.75rem; }
-.reviews-list { display: flex; flex-direction: column; gap: 1rem; }
-.review-item { background-color: #f8fafc; padding: 1rem; border-radius: 8px; border-left: 3px solid #2563eb; }
-.review-comment { font-style: italic; color: #475569; margin: 0 0 0.5rem 0; }
-.review-author { text-align: right; display: block; font-weight: 500; }
+.verified-badge-modal {
+  color: #166534;
+  background-color: #f0fdf4;
+}
+.experience-badge-modal {
+  color: #7e22ce;
+  background-color: #fdf4ff;
+}
+.modal-rating {
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-weight: 600;
+}
+.modal-skill-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 1rem 0;
+}
+.modal-teacher-bio {
+  color: #475569;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+.modal-section {
+  margin-bottom: 2rem;
+}
+.modal-section-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 0.5rem;
+}
+.syllabus-list {
+  list-style: none;
+  padding-left: 0;
+}
+.syllabus-list li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+}
+.syllabus-list li::before {
+  content: '✓';
+  color: #2563eb;
+  margin-right: 0.75rem;
+}
 
-/* NEW: Footer Buttons */
 .modal-footer {
-    display: flex; gap: 1rem; justify-content: center;
-    border-top: 1px solid #e2e8f0; padding-top: 2rem; margin-top: 1rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 2rem;
+  margin-top: 1rem;
 }
 .btn-request-modal, .btn-message-modal {
-    display: inline-flex; align-items: center; gap: 0.5rem;
-    padding: 14px 28px; border: none; border-radius: 8px; font-size: 1rem;
-    font-weight: 600; cursor: pointer; transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 14px 28px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
 }
-.btn-message-modal { background-color: #ffffff; color: #334155; border: 1px solid #cbd5e1; }
-.btn-message-modal:hover { background-color: #f8fafc; }
-.btn-request-modal { background-color: #2563eb; color: white; }
-.btn-request-modal:hover { background-color: #1d4ed8; transform: translateY(-2px); }
+.btn-message-modal {
+  background-color: #ffffff;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+}
+.btn-message-modal:hover {
+  background-color: #f8fafc;
+}
+.btn-request-modal {
+  background-color: #2563eb;
+  color: white;
+}
+.btn-request-modal:hover {
+  /* THE FIX: Corrected 5-digit hex code to 6-digit hex code */
+  background-color: #1d4ed8; 
+  transform: translateY(-2px);
+}
 
-/* RESPONSIVE */
-@media (max-width: 992px) { .skills-main-content { margin-left: 70px; } }
-@media (max-width: 768px) { .skills-main-content { margin-left: 0; padding: 1.5rem; } }
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 5px solid #e2e8f0; /* Light grey */
+  border-top-color: #2563eb; /* Blue */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.no-results {
+  text-align: center;
+  padding: 4rem 2rem;
+  background-color: #ffffff;
+  border-radius: 16px;
+  margin-top: 2rem;
+}
+.no-results h3 {
+  font-size: 1.75rem;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+}
+.no-results p {
+  color: #64748b;
+  margin-bottom: 1.5rem;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.btn-clear-filters {
+  background: transparent;
+  color: #2563eb;
+  border: 1px solid #2563eb;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-clear-filters:hover {
+  background-color: #2563eb;
+  color: white;
+}

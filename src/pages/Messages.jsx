@@ -2,120 +2,125 @@ import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import { Send, CalendarPlus } from 'lucide-react';
+import { useAuth } from "../context/AuthContext";
+import { db } from "../firebase";
+import { collection, query, where, onSnapshot, addDoc, serverTimestamp, orderBy, doc, updateDoc } from "firebase/firestore";
 import "../styles/MessagesPage.css";
 
-// Mock data now includes online status and conversation topic
-const initialConversations = [
-  {
-    id: 1,
-    name: "Santoshi Patil",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Santoshi",
-    topic: "Acoustic Guitar Mastery",
-    isOnline: true,
-    lastMessage: "Sounds great! See you then.",
-    timestamp: "10:42 AM",
-    messages: [
-      { id: 1, sender: "other", text: "Hey Harshal! Are we still on for the guitar session tomorrow?" },
-      { id: 2, sender: "me", text: "Hey Santoshi! Absolutely. I'm looking forward to it." },
-      { id: 3, sender: "other", text: "Sounds great! See you then." },
-    ],
-  },
-  {
-    id: 2,
-    name: "Rahul Singh",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Rahul",
-    topic: "Data Science with Python",
-    isOnline: false,
-    lastMessage: "I've pushed the latest code.",
-    timestamp: "Yesterday",
-    messages: [
-      { id: 1, sender: "me", text: "Hey Rahul, can you check the latest pull request?" },
-      { id: 2, sender: "other", text: "Sure, taking a look now." },
-      { id: 3, sender: "other", text: "Looks good. I've pushed the latest code." },
-    ],
-  },
-];
-
 export default function Messages() {
-  const [conversations, setConversations] = useState(initialConversations);
-  const [activeChatId, setActiveChatId] = useState(1);
+  const { currentUser } = useAuth();
+  const [conversations, setConversations] = useState([]);
+  const [activeChat, setActiveChat] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [loadingConvos, setLoadingConvos] = useState(true);
+  const [loadingMessages, setLoadingMessages] = useState(false);
   const [newMessage, setNewMessage] = useState("");
   const chatWindowRef = useRef(null);
 
-  const activeChat = conversations.find(c => c.id === activeChatId);
-  
+  // Effect to fetch user's conversations
+  useEffect(() => {
+    if (!currentUser) return;
+    setLoadingConvos(true);
+    const q = query(collection(db, "conversations"), where("participants", "array-contains", currentUser.uid));
+    
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const convosData = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        // Get the other participant's info
+        otherUserName: doc.data().participantNames.find(name => name !== currentUser.displayName),
+        otherUserAvatar: doc.data().participantAvatars.find(avatar => avatar !== currentUser.photoURL),
+      }));
+      setConversations(convosData);
+      setLoadingConvos(false);
+    });
+    return () => unsubscribe();
+  }, [currentUser]);
+
+  // Effect to fetch messages for the active chat
+  useEffect(() => {
+    if (!activeChat) return;
+    setLoadingMessages(true);
+    const messagesRef = collection(db, "conversations", activeChat.id, "messages");
+    const q = query(messagesRef, orderBy("createdAt", "asc"));
+
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const messagesData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setMessages(messagesData);
+      setLoadingMessages(false);
+    });
+    return () => unsubscribe();
+  }, [activeChat]);
+
   // Auto-scroll to bottom of chat window
   useEffect(() => {
     if (chatWindowRef.current) {
       chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight;
     }
-  }, [activeChat, conversations]);
+  }, [messages]);
 
-  const handleSendMessage = (e) => {
+  const handleSendMessage = async (e) => {
     e.preventDefault();
-    if (newMessage.trim() === "") return;
-    
-    const newMsg = {
-        id: Date.now(), // Use a unique ID
-        sender: "me",
-        text: newMessage,
-    };
+    if (newMessage.trim() === "" || !activeChat) return;
 
-    // Update the state to make the chat interactive
-    setConversations(prevConvos => 
-        prevConvos.map(convo => 
-            convo.id === activeChatId
-            ? { ...convo, messages: [...convo.messages, newMsg], lastMessage: newMessage, timestamp: "Now" }
-            : convo
-        )
-    );
+    const messageText = newMessage;
     setNewMessage("");
+
+    // Add new message to the 'messages' subcollection
+    const messagesRef = collection(db, "conversations", activeChat.id, "messages");
+    await addDoc(messagesRef, {
+      text: messageText,
+      senderId: currentUser.uid,
+      createdAt: serverTimestamp(),
+    });
+
+    // Update the lastMessage on the conversation document
+    const convoRef = doc(db, "conversations", activeChat.id);
+    await updateDoc(convoRef, {
+        lastMessage: messageText,
+        lastTimestamp: serverTimestamp(),
+    });
   };
 
   return (
     <div className="messages-page-container">
       <Sidebar />
-      <main className="messages-main-content">
-        {/* Left Panel: Conversations List */}
+      <main className="messages-main-content main-content-area">
         <div className="conversations-panel">
-          <div className="panel-header">
-            <h2>Chats</h2>
-          </div>
+          <div className="panel-header"><h2>Chats</h2></div>
           <div className="conversations-list">
-            {conversations.map((convo) => (
-              <div
-                key={convo.id}
-                className={`conversation-item ${convo.id === activeChatId ? "active" : ""}`}
-                onClick={() => setActiveChatId(convo.id)}
-              >
-                <div className="convo-avatar-wrapper">
-                  <img src={convo.avatar} alt={convo.name} className="convo-avatar" />
-                  {convo.isOnline && <div className="online-indicator"></div>}
-                </div>
-                <div className="convo-details">
-                  <div className="convo-header">
-                    <span className="convo-name">{convo.name}</span>
-                    <span className="convo-timestamp">{convo.timestamp}</span>
+            {loadingConvos ? (<p>Loading chats...</p>) : (
+              conversations.map((convo) => (
+                <div
+                  key={convo.id}
+                  className={`conversation-item ${activeChat?.id === convo.id ? "active" : ""}`}
+                  onClick={() => setActiveChat(convo)}
+                >
+                  <div className="convo-avatar-wrapper">
+                    <img src={convo.otherUserAvatar} alt={convo.otherUserName} className="convo-avatar" />
+                    {/* Add online status logic here if needed */}
                   </div>
-                  <p className="convo-last-message">{convo.lastMessage}</p>
+                  <div className="convo-details">
+                    <div className="convo-header">
+                      <span className="convo-name">{convo.otherUserName}</span>
+                      <span className="convo-timestamp">{convo.lastTimestamp?.toDate().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                    </div>
+                    <p className="convo-last-message">{convo.lastMessage}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
 
-        {/* Right Panel: Active Chat Window */}
         <div className="chat-panel">
           {activeChat ? (
             <>
               <header className="chat-header">
                 <div className="chat-header-info">
-                  <div className="convo-avatar-wrapper">
-                    <img src={activeChat.avatar} alt={activeChat.name} className="chat-avatar" />
-                    {activeChat.isOnline && <div className="online-indicator"></div>}
-                  </div>
+                  <img src={activeChat.otherUserAvatar} alt={activeChat.otherUserName} className="chat-avatar" />
                   <div>
-                    <h3>{activeChat.name}</h3>
+                    <h3>{activeChat.otherUserName}</h3>
                     <p className="chat-topic">Topic: {activeChat.topic}</p>
                   </div>
                 </div>
@@ -123,11 +128,13 @@ export default function Messages() {
               </header>
 
               <div className="chat-window" ref={chatWindowRef}>
-                {activeChat.messages.map((msg) => (
-                  <div key={msg.id} className={`chat-bubble-wrapper ${msg.sender}`}>
-                    <div className="chat-bubble">{msg.text}</div>
-                  </div>
-                ))}
+                {loadingMessages ? (<p>Loading messages...</p>) : (
+                    messages.map((msg) => (
+                    <div key={msg.id} className={`chat-bubble-wrapper ${msg.senderId === currentUser.uid ? 'me' : 'other'}`}>
+                        <div className="chat-bubble">{msg.text}</div>
+                    </div>
+                    ))
+                )}
               </div>
 
               <form className="chat-input-form" onSubmit={handleSendMessage}>
@@ -151,3 +158,4 @@ export default function Messages() {
     </div>
   );
 }
+

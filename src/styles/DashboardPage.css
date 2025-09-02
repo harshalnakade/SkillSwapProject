@@ -1,5 +1,7 @@
 /* === VARIABLES & GLOBAL STYLES === */
 :root {
+  display: flex;
+  min-height: 100vh;
   --primary-blue: #2563eb;
   --primary-blue-dark: #1d4ed8;
   --primary-emerald: #10b981;
@@ -17,10 +19,11 @@
 
 .dashboard-page-container { background-color: var(--neutral-light); font-family: var(--font-sans); }
 .dashboard-main-content {
-  margin-left: 260px; /* Should match --sidebar-width */
+  margin-left: 260px;
+  width: calc(100% - 260px); /* NEW */
   padding: 2.5rem;
   min-height: 100vh;
-  transition: margin-left 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
 }
 /* For Collapsible Sidebar */
 body.sidebar-collapsed .dashboard-main-content {
