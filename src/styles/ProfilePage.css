@@ -18,6 +18,8 @@
 .profile-page-container {
   background-color: var(--background-light);
   font-family: 'Inter', sans-serif;
+  width: 100vw;
+  
 }
 
 .profile-main-content {

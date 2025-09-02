@@ -28,7 +28,7 @@ html {
   background-color: var(--background-white);
   color: var(--neutral-dark);
   line-height: 1.6;
-  width: 100%; /* THE FIX: Ensures the page fills the full width */
+  width: 100vw; /* THE FIX: Ensures the page fills the full width */
 }
 
 .landing-page-wrapper .container {

@@ -24,7 +24,7 @@
   min-height: 100vh;
   font-family: var(--font-sans);
   background-color: var(--background-white);
-  width: 100%;
+  width: 100vw;
 }
 
 /* === LEFT PANEL: BRANDING === */
@@ -51,7 +51,7 @@
   flex: 1; display: flex; justify-content: center;
   align-items: center; padding: 2rem; background-color: var(--background-white);
 }
-.form-container { width: 100%; max-width: 400px; }
+.form-container { width: 100%; max-width: 100%; }
 .form-header { text-align: center; margin-bottom: 2rem; }
 .form-header h2 { font-size: 2rem; font-weight: 700; color: var(--neutral-dark); margin-bottom: 0.5rem; }
 .form-header p { color: var(--neutral-medium); }
