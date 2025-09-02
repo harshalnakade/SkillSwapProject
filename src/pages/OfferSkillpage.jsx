@@ -1,8 +1,13 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
-import { BookOpen, Type, Calendar, Check, PlusCircle, X } from 'lucide-react';
+import { BookOpen, Type, Calendar, Check, PlusCircle, X, Trash2 } from 'lucide-react';
+
+// NEW: Import Firebase services and AuthContext
+import { useAuth } from "../context/AuthContext";
+import { db } from "../firebase";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+
 import "../styles/OfferSkillPage.css";
 
 const STEPS = [
@@ -46,8 +51,10 @@ const AddCategoryModal = ({ onClose, onAddCategory }) => {
 
 export default function OfferSkillPage() {
   const navigate = useNavigate();
+  const { currentUser } = useAuth(); // NEW: Get the logged-in user
+
   const [currentStep, setCurrentStep] = useState(1);
-  
+  const [isLoading, setIsLoading] = useState(false);
   const [isCategoryModalOpen, setCategoryModalOpen] = useState(false);
   const [categories, setCategories] = useState([
       "Backend Development",
@@ -61,7 +68,7 @@ export default function OfferSkillPage() {
     category: "Backend Development",
     level: "Beginner",
     description: "",
-    syllabus: ["", "", ""], // Start with 3 empty syllabus items
+    syllabus: [""], // Start with one dynamic syllabus item
     availability: {
       Monday: [], Tuesday: [], Wednesday: [], Thursday: [], Friday: []
     }
@@ -85,6 +92,15 @@ export default function OfferSkillPage() {
     newSyllabus[index] = value;
     setFormData(prev => ({ ...prev, syllabus: newSyllabus }));
   };
+
+  const addSyllabusItem = () => {
+    setFormData(prev => ({ ...prev, syllabus: [...prev.syllabus, ""] }));
+  };
+
+  const removeSyllabusItem = (index) => {
+    const newSyllabus = formData.syllabus.filter((_, i) => i !== index);
+    setFormData(prev => ({ ...prev, syllabus: newSyllabus }));
+  };
   
   const handleAvailabilityChange = (day, time) => {
       setFormData(prev => {
@@ -96,15 +112,51 @@ export default function OfferSkillPage() {
       });
   };
 
-  const nextStep = () => setCurrentStep(prev => Math.min(prev + 1, STEPS.length));
+  const nextStep = () => {
+      // Basic validation before proceeding
+      if (currentStep === 1 && !formData.skillName.trim()) {
+          alert("Please enter a skill title.");
+          return;
+      }
+      if (currentStep === 2 && !formData.description.trim()) {
+          alert("Please enter a description.");
+          return;
+      }
+      setCurrentStep(prev => Math.min(prev + 1, STEPS.length));
+  };
   const prevStep = () => setCurrentStep(prev => Math.max(prev - 1, 1));
   
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
       e.preventDefault();
-      console.log("Submitting New Skill:", formData);
-      // Here you would send the data to your backend
-      alert("Skill submitted successfully!");
-      navigate("/dashboard");
+      if (!currentUser) {
+          alert("You must be logged in to offer a skill.");
+          return navigate("/login");
+      }
+      setIsLoading(true);
+      try {
+          await addDoc(collection(db, "skills"), {
+              teacherId: currentUser.uid,
+              teacherName: currentUser.name || currentUser.displayName,
+              teacherAvatar: currentUser.avatar || currentUser.photoURL,
+              skillName: formData.skillName,
+              category: formData.category,
+              level: formData.level,
+              description: formData.description,
+              syllabus: formData.syllabus.filter(item => item.trim() !== ""),
+              availability: formData.availability,
+              createdAt: serverTimestamp(),
+              isVerified: true, // Default verification status
+              rating: 0, // Initial rating
+              reviewCount: 0, // Initial review count
+          });
+          alert("Your skill has been offered successfully!");
+          navigate("/dashboard");
+      } catch (error) {
+          console.error("Error adding skill to Firestore: ", error);
+          alert("Failed to submit skill. Please try again.");
+      } finally {
+          setIsLoading(false);
+      }
   };
 
   const timeSlots = ["10:00 AM", "11:00 AM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM"];
@@ -119,7 +171,6 @@ export default function OfferSkillPage() {
         </header>
 
         <div className="form-wrapper">
-          {/* Step Indicator */}
           <div className="step-indicator">
             {STEPS.map((step, index) => (
               <div key={step.id} className={`step-item ${currentStep >= step.id ? 'completed' : ''}`}>
@@ -131,7 +182,6 @@ export default function OfferSkillPage() {
           </div>
 
           <form onSubmit={handleSubmit}>
-            {/* Step 1: Skill Details */}
             {currentStep === 1 && (
               <div className="form-step">
                 <div className="form-group">
@@ -163,7 +213,6 @@ export default function OfferSkillPage() {
               </div>
             )}
             
-            {/* Step 2: Description & Syllabus */}
             {currentStep === 2 && (
               <div className="form-step">
                 <div className="form-group">
@@ -173,13 +222,22 @@ export default function OfferSkillPage() {
                  <div className="form-group">
                   <label>What You'll Cover (Syllabus)</label>
                   {formData.syllabus.map((item, index) => (
-                      <input key={index} type="text" placeholder={`Topic ${index + 1}`} value={item} onChange={(e) => handleSyllabusChange(index, e.target.value)} />
+                      <div key={index} className="syllabus-item">
+                        <input type="text" placeholder={`Topic ${index + 1}`} value={item} onChange={(e) => handleSyllabusChange(index, e.target.value)} />
+                        {formData.syllabus.length > 1 && (
+                            <button type="button" className="btn-remove" onClick={() => removeSyllabusItem(index)}>
+                                <Trash2 size={18} />
+                            </button>
+                        )}
+                      </div>
                   ))}
+                  <button type="button" className="btn-add-topic" onClick={addSyllabusItem}>
+                      <PlusCircle size={16}/> Add Topic
+                  </button>
                 </div>
               </div>
             )}
 
-            {/* Step 3: Availability */}
             {currentStep === 3 && (
                 <div className="form-step">
                     <label>Set Your Weekly Availability</label>
@@ -203,7 +261,6 @@ export default function OfferSkillPage() {
                 </div>
             )}
             
-            {/* Step 4: Review */}
             {currentStep === 4 && (
                 <div className="form-step review-step">
                     <h4>Review Your Listing</h4>
@@ -215,11 +272,14 @@ export default function OfferSkillPage() {
                 </div>
             )}
 
-            {/* Navigation Buttons */}
             <div className="form-navigation">
               {currentStep > 1 && <button type="button" className="btn-secondary" onClick={prevStep}>Back</button>}
               {currentStep < STEPS.length && <button type="button" className="btn-primary" onClick={nextStep}>Next</button>}
-              {currentStep === STEPS.length && <button type="submit" className="btn-primary">Submit Skill</button>}
+              {currentStep === STEPS.length && (
+                <button type="submit" className="btn-primary" disabled={isLoading}>
+                    {isLoading ? <div className="spinner-light"></div> : "Submit Skill"}
+                </button>
+              )}
             </div>
           </form>
         </div>

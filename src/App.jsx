@@ -3,23 +3,28 @@ import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
 import Dashboard from "./pages/Dashboard";
 import ProfilePage from "./pages/ProfilePage";
-import SkillListings from "./pages/SkillListings";
+import SkillsPage from "./pages/SkillListings";
 import Sessions from "./pages/Sessions";
 import Messages from "./pages/Messages";
-import OfferSkillPage from "./pages/OfferSkillpage";
+import OfferSkillPage from "./pages/OfferSkillPage";
+import ProtectedRoute from "./components/Protected"; // Import the ProtectedRoute
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Public routes that anyone can access */}
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/skills" element={<SkillListings />} />
-        <Route path="/sessions" element={<Sessions />} />
-        <Route path="/messages" element={<Messages />} />
-        <Route path="/offer-skill" element={<OfferSkillPage/>} />
+        <Route path="/signup" element={<LoginPage />} />
+        
+        {/* Protected routes that only logged-in users can access */}
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+        <Route path="/skills" element={<ProtectedRoute><SkillsPage /></ProtectedRoute>} />
+        <Route path="/sessions" element={<ProtectedRoute><Sessions /></ProtectedRoute>} />
+        <Route path="/messages" element={<ProtectedRoute><Messages /></ProtectedRoute>} />
+        <Route path="/offer-skill" element={<ProtectedRoute><OfferSkillPage /></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
   );

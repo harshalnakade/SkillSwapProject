@@ -1,6 +1,7 @@
+/* src/styles/LandingPage.css */
 
-/* === VARIABLES & GLOBAL STYLES (Scoped to this component) === */
-.landing-page-wrapper {
+/* === VARIABLES & GLOBAL STYLES === */
+:root {
   --primary-blue: #2563eb;
   --primary-blue-dark: #1d4ed8;
   --primary-emerald: #10b981;
@@ -18,7 +19,9 @@
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+}
 
 .landing-page-wrapper {
   font-family: var(--font-sans);
@@ -27,19 +30,24 @@ html { scroll-behavior: smooth; }
   line-height: 1.6;
 }
 
-.landing-page-wrapper .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+.landing-page-wrapper .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
 
 /* === SMOOTH FADE-IN ANIMATION === */
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
+
 .landing-page-wrapper .features-section,
 .landing-page-wrapper .featured-skills-section,
 .landing-page-wrapper .testimonials-section,
 .landing-page-wrapper .stats-section,
 .landing-page-wrapper .cta-section {
-    animation: fadeIn 1s ease-out forwards;
+  animation: fadeIn 1s ease-out forwards;
 }
 
 /* === NAVIGATION BAR === */
@@ -133,7 +141,7 @@ html { scroll-behavior: smooth; }
 .landing-page-wrapper .skill-category-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); color: var(--primary-blue); }
 .landing-page-wrapper .skill-category-card h4 { margin-top: 1rem; font-size: 1.25rem; font-weight: 600; }
 
-/* === NEW: TESTIMONIALS SECTION === */
+/* === TESTIMONIALS SECTION === */
 .landing-page-wrapper .testimonials-grid { 
   display: grid; 
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
@@ -155,7 +163,6 @@ html { scroll-behavior: smooth; }
     align-items: center; 
     gap: 1rem; 
 }
-/* THE FIX: Styles for the author avatar */
 .landing-page-wrapper .author-avatar { 
     width: 50px; 
     height: 50px; 
@@ -164,7 +171,6 @@ html { scroll-behavior: smooth; }
 }
 .landing-page-wrapper .author-name { font-weight: 600; margin: 0; }
 .landing-page-wrapper .author-role { color: var(--neutral-medium); margin: 0; font-size: 0.9rem; }
-
 
 /* === STATS SECTION === */
 .landing-page-wrapper .stats-section {
@@ -205,4 +211,14 @@ html { scroll-behavior: smooth; }
   .landing-page-wrapper .main-nav { display: none; }
   .landing-page-wrapper .hero-title { font-size: 3rem; }
   .landing-page-wrapper .section-title { font-size: 2rem; }
+  /* THE FIX: Added rules to stack all grids on mobile */
+  .landing-page-wrapper .stats-grid, 
+  .landing-page-wrapper .features-grid, 
+  .landing-page-wrapper .skills-grid,
+  .landing-page-wrapper .testimonials-grid { 
+    grid-template-columns: 1fr; 
+  }
+  .landing-page-wrapper .footer-content { flex-direction: column; text-align: center; }
+  .landing-page-wrapper .footer-about, .landing-page-wrapper .footer-links { width: 100%; }
+  .landing-page-wrapper .footer-links { justify-content: center; }
 }

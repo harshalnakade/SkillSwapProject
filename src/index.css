@@ -1,68 +1,68 @@
+/* src/index.css */
+
+/* === VARIABLES & FONT IMPORT === */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  --primary-blue: #2563eb;
+  --primary-blue-dark: #1d4ed8;
+  --neutral-dark: #1e293b;
+  --neutral-medium: #64748b;
+  --neutral-light: #f1f5f9;
+  --background-page: #f8fafc;
+  --font-sans: 'Inter', sans-serif;
+  --sidebar-width: 260px;
+  --sidebar-width-collapsed: 88px;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+/* === CSS RESET & GLOBAL DEFAULTS === */
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
+  font-family: var(--font-sans);
+  background-color: var(--background-page);
+  color: var(--neutral-dark);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
   min-height: 100vh;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+/* === MAIN CONTENT LAYOUT (THE CRITICAL FIX) === 
+  This class should be added to the <main> element of every page 
+  that uses the sidebar (Dashboard, Profile, Sessions, etc.)
+*/
+.main-content-area {
+  /* Default margin to make space for the expanded sidebar */
+  margin-left: var(--sidebar-width);
+  /* Smooth transition for when the sidebar collapses */
+  transition: margin-left 0.3s ease-in-out;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+/* This rule is activated by the JavaScript in your Sidebar component */
+body.sidebar-collapsed .main-content-area {
+  /* New margin for when the sidebar is collapsed */
+  margin-left: var(--sidebar-width-collapsed);
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+/* === RESPONSIVE ADJUSTMENTS === */
+@media (max-width: 992px) {
+  .main-content-area,
+  body.sidebar-collapsed .main-content-area {
+    /* Adjust for the smaller "icon-only" sidebar on tablets */
+    margin-left: 70px;
   }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
+}
+
+@media (max-width: 768px) {
+  .main-content-area,
+  body.sidebar-collapsed .main-content-area {
+    /* No margin on mobile as sidebar would typically overlay or be hidden */
+    margin-left: 0;
   }
 }
