@@ -8,6 +8,7 @@
   height: 100vh;
   display: flex;
   overflow: hidden; /* Prevent the whole page from scrolling */
+  width: 83vw;
 }
 
 /* === LEFT PANEL: CONVERSATIONS === */

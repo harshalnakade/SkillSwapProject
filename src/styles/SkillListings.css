@@ -8,6 +8,7 @@
   /* The margin-left is now handled by the global .main-content-area class */
   padding: 2.5rem;
   min-height: 100vh;
+  width: 80vw;
 }
 .skills-header {
   margin-bottom: 2rem;

@@ -182,7 +182,7 @@
     height: 12px;
 }
 .skeleton-avatar, .skeleton-text {
-    background-image: linear-gradient(to right, #374151 0%, #4b5563 20%, #374151 40%, #374151 100%);
+    background-image: linear-gradient(to right, #969ba4 0%, #8899b1 20%, #607392 40%, #51555d 100%);
     background-repeat: no-repeat;
     background-size: 800px 104px;
     animation: shimmer 2s infinite linear;
