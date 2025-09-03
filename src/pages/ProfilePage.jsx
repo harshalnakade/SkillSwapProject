@@ -1,60 +1,78 @@
-// src/pages/ProfilePage.jsx
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
-import { EditProfileModal } from "../components/models/EditProfileModel";
-import { MapPin, Calendar, Star, MessageSquareQuote } from 'lucide-react';
+import EditProfileModal from "../components/EditProfileModal";
+import { MapPin, Calendar, Star, Edit, Trash2 } from 'lucide-react';
+import { useAuth } from "../context/AuthContext";
+import { db } from "../firebase";
+import { collection, query, where, onSnapshot, doc, deleteDoc } from "firebase/firestore";
 import "../styles/ProfilePage.css";
 
-// Expanded mock data for a richer profile
-const mockUser = {
-  name: "Harshal Nakade",
-  bio: "Full Stack Developer with a passion for creating beautiful, functional web applications. I believe in the power of shared knowledge and continuous learning.",
-  avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Harshal",
-  location: "Pune, India",
-  memberSince: "August 2024",
-  stats: {
-    taught: 12,
-    attended: 28,
-    rating: 4.9,
-  },
-  skills: [
-    { id: 1, name: "React", level: "Advanced" },
-    { id: 2, name: "Node.js", level: "Intermediate" },
-    { id: 3, name: "TypeScript", level: "Advanced" },
-    { id: 4, name: "GraphQL", level: "Beginner" },
-    { id: 5, name: "Figma", level: "Intermediate" },
-  ],
-  sessionHistory: [
-    { id: 1, title: "React Basics Workshop", date: "2025-08-12", status: "Completed" },
-    { id: 2, title: "Intro to Flutter", date: "2025-08-05", status: "Completed" },
-    { id: 3, title: "Advanced React Patterns", date: "2025-09-05", status: "Upcoming" },
-  ],
-  reviews: [
-      { id: 1, reviewer: "Santoshi Patil", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Santoshi", quote: "Harshal is an amazing teacher! He explains complex topics in a simple, understandable way. Highly recommended!" },
-      { id: 2, reviewer: "Rahul Singh", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Rahul", quote: "Learned so much about React Hooks in just one session. The session was well-structured and very practical." },
-  ]
-};
-
 export default function ProfilePage() {
+  const { currentUser } = useAuth();
+  const navigate = useNavigate();
   const [editOpen, setEditOpen] = useState(false);
+  const [mySkills, setMySkills] = useState([]);
+  const [loadingSkills, setLoadingSkills] = useState(true);
+
+  useEffect(() => {
+    if (currentUser) {
+      setLoadingSkills(true);
+      const skillsQuery = query(collection(db, "skills"), where("teacherId", "==", currentUser.uid));
+      const unsubscribe = onSnapshot(skillsQuery, (querySnapshot) => {
+        const skillsData = [];
+        querySnapshot.forEach((doc) => {
+          skillsData.push({ id: doc.id, ...doc.data() });
+        });
+        setMySkills(skillsData);
+        setLoadingSkills(false);
+      });
+      return () => unsubscribe();
+    }
+  }, [currentUser]);
+
+  const handleDeleteSkill = async (skillId) => {
+    if (window.confirm("Are you sure you want to delete this skill? This action cannot be undone.")) {
+        try {
+            await deleteDoc(doc(db, "skills", skillId));
+            alert("Skill deleted successfully.");
+        } catch (error) {
+            console.error("Error deleting skill:", error);
+            alert("Failed to delete skill. Please try again.");
+        }
+    }
+  };
+
+  const memberSinceDate = currentUser?.memberSince?.toDate 
+      ? currentUser.memberSince.toDate().toLocaleDateString("en-US", { month: 'long', year: 'numeric' })
+      : "Not available";
+
+  if (!currentUser) {
+    return (
+        <div className="profile-page-container">
+            <Sidebar />
+            <main className="profile-main-content main-content-area">
+                <div className="loading-state">Loading Profile...</div>
+            </main>
+        </div>
+    );
+  }
 
   return (
     <div className="profile-page-container">
       <Sidebar />
-      <main className="profile-main-content">
-        {/* === Profile Header === */}
+      <main className="profile-main-content main-content-area">
         <header className="profile-header">
           <div className="profile-banner"></div>
           <div className="profile-details-wrapper">
             <div className="profile-avatar-container">
-                <img className="profile-avatar" src={mockUser.avatar} alt={mockUser.name} />
+                <img className="profile-avatar" src={currentUser.avatar || currentUser.photoURL} alt={currentUser.name || currentUser.displayName} />
             </div>
             <div className="profile-info">
-              <h1 className="user-name">{mockUser.name}</h1>
+              <h1 className="user-name">{currentUser.name || currentUser.displayName}</h1>
               <div className="user-meta">
-                <span><MapPin size={16} /> {mockUser.location}</span>
-                <span><Calendar size={16} /> Member since {mockUser.memberSince}</span>
+                {currentUser.location && <span><MapPin size={16} /> {currentUser.location}</span>}
+                <span><Calendar size={16} /> Member since {memberSinceDate}</span>
               </div>
             </div>
             <button className="btn-edit-profile" onClick={() => setEditOpen(true)}>
@@ -63,81 +81,61 @@ export default function ProfilePage() {
           </div>
         </header>
 
-        {/* === Stats Bar === */}
+        {/* Stats Bar (Still uses placeholder data for now) */}
         <section className="stats-bar">
-          <div className="stat-item">
-            <span className="stat-value">{mockUser.stats.taught}</span>
-            <span className="stat-label">Sessions Taught</span>
-          </div>
-          <div className="stat-item">
-            <span className="stat-value">{mockUser.stats.attended}</span>
-            <span className="stat-label">Sessions Attended</span>
-          </div>
-          <div className="stat-item">
-            <span className="stat-value">
-              <Star size={20} className="star-icon" /> {mockUser.stats.rating}
-            </span>
-            <span className="stat-label">Average Rating</span>
-          </div>
+          <div className="stat-item"><span className="stat-value">12</span><span className="stat-label">Sessions Taught</span></div>
+          <div className="stat-item"><span className="stat-value">28</span><span className="stat-label">Sessions Attended</span></div>
+          <div className="stat-item"><span className="stat-value"><Star size={20} className="star-icon" /> 4.9</span><span className="stat-label">Average Rating</span></div>
         </section>
 
-        {/* === Main Content Grid (2 Columns) === */}
         <div className="profile-content-grid">
-          {/* Left Column */}
           <div className="profile-left-column">
             <div className="profile-card">
               <h2 className="card-title">About Me</h2>
-              <p className="user-bio">{mockUser.bio}</p>
+              <p className="user-bio">{currentUser.bio || "No bio added yet. Click 'Edit Profile' to tell the community about yourself."}</p>
             </div>
+            
             <div className="profile-card">
-              <h2 className="card-title">My Skills</h2>
-              <div className="skills-container">
-                {mockUser.skills.map((skill) => (
-                  <div key={skill.id} className="skill-badge">
-                    <span className="skill-name">{skill.name}</span>
-                    <span className={`skill-level ${skill.level.toLowerCase()}`}>{skill.level}</span>
-                  </div>
-                ))}
-              </div>
+              <h2 className="card-title">My Offered Skills</h2>
+              {loadingSkills ? ( <p>Loading skills...</p> ) 
+              : mySkills.length > 0 ? (
+                <div className="my-skills-list">
+                  {mySkills.map((skill) => (
+                    <div key={skill.id} className="my-skill-item">
+                      <div className="skill-badge">
+                        <span className="skill-name">{skill.skillName}</span>
+                        <span className={`skill-level ${skill.level.toLowerCase()}`}>{skill.level}</span>
+                      </div>
+                      <div className="skill-actions">
+                        <button onClick={() => navigate(`/offer-skill/edit/${skill.id}`)} className="btn-icon">
+                            <Edit size={18} /> <span>Edit</span>
+                        </button>
+                        <button onClick={() => handleDeleteSkill(skill.id)} className="btn-icon btn-delete">
+                            <Trash2 size={18} /> <span>Delete</span>
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p>You haven't offered any skills yet. Click "Offer a New Skill" in the sidebar to get started!</p>
+              )}
             </div>
           </div>
-
-          {/* Right Column */}
           <div className="profile-right-column">
              <div className="profile-card">
                 <h2 className="card-title">Session History</h2>
-                <ul className="sessions-list">
-                    {mockUser.sessionHistory.map((session) => (
-                    <li key={session.id} className="session-item">
-                        <div className={`status-dot ${session.status.toLowerCase()}`}></div>
-                        <div className="session-info">
-                            <span className="session-title">{session.title}</span>
-                            <span className="session-date">{new Date(session.date).toLocaleDateString("en-US", { month: 'long', day: 'numeric', year: 'numeric' })}</span>
-                        </div>
-                    </li>
-                    ))}
-                </ul>
+                <p>Your session history will appear here.</p>
             </div>
             <div className="profile-card">
                 <h2 className="card-title">Reviews</h2>
-                <div className="reviews-container">
-                    {mockUser.reviews.map(review => (
-                        <div key={review.id} className="review-item">
-                            <MessageSquareQuote className="quote-icon"/>
-                            <p className="review-quote">"{review.quote}"</p>
-                            <div className="reviewer-info">
-                                <img src={review.avatar} alt={review.reviewer} className="reviewer-avatar"/>
-                                <span>- {review.reviewer}</span>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+                <p>Reviews from your sessions will appear here.</p>
             </div>
           </div>
         </div>
       </main>
-
-      {/* <EditProfileModal open={editOpen} onOpenChange={setEditOpen} /> */}
+      <EditProfileModal isOpen={editOpen} onClose={() => setEditOpen(false)} />
     </div>
   );
 }
+

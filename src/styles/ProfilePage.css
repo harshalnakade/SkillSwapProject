@@ -18,6 +18,8 @@
 .profile-page-container {
   background-color: var(--background-light);
   font-family: 'Inter', sans-serif;
+  width: 100vw;
+  
 }
 
 .profile-main-content {
@@ -137,6 +139,52 @@
   border-radius: 50%;
   object-fit: cover; /* Ensures avatar image fills the space nicely */
 }
+
+.my-skills-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.my-skill-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f8fafc;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.skill-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.btn-icon {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: none;
+    border: 1px solid transparent;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.btn-icon:hover {
+    background-color: #f1f5f9;
+    border-color: #e2e8f0;
+}
+
+.btn-icon.btn-delete:hover {
+    color: #ef4444; /* Red */
+    background-color: #fee2e2;
+    border-color: #fecaca;
+}
+
 
 /* === RESPONSIVE DESIGN === */
 @media (max-width: 1200px) {

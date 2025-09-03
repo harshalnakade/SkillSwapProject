@@ -6,7 +6,8 @@ import ProfilePage from "./pages/ProfilePage";
 import SkillsPage from "./pages/SkillListings";
 import Sessions from "./pages/Sessions";
 import Messages from "./pages/Messages";
-import OfferSkillPage from "./pages/OfferSkillPage";
+import BookingPage from "./pages/Booking"; 
+import OfferSkillPage from "./pages/OfferSkillpage";
 import ProtectedRoute from "./components/Protected"; // Import the ProtectedRoute
 
 function App() {
@@ -25,6 +26,8 @@ function App() {
         <Route path="/sessions" element={<ProtectedRoute><Sessions /></ProtectedRoute>} />
         <Route path="/messages" element={<ProtectedRoute><Messages /></ProtectedRoute>} />
         <Route path="/offer-skill" element={<ProtectedRoute><OfferSkillPage /></ProtectedRoute>} />
+         <Route path="/book/:skillId" element={<ProtectedRoute><BookingPage /></ProtectedRoute>} />
+          <Route path="/offer-skill/edit/:skillId" element={<ProtectedRoute><OfferSkillPage /></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
   );

@@ -1,6 +1,3 @@
-// src/pages/LandingPage.jsx
-
-
 import { Link } from "react-router-dom";
 import { GraduationCap, Users, Lightbulb, BarChart, Code, Music, Palette, MoveRight } from "lucide-react";
 import "../styles/LandingPage.css";
@@ -22,7 +19,7 @@ export default function LandingPage() {
             <a href="#features">How it Works</a>
             <a href="#skills">Skills</a>
             <Link to="/login" className="nav-btn-outline">Sign In</Link>
-           
+          
           </nav>
         </div>
       </header>
@@ -34,7 +31,7 @@ export default function LandingPage() {
             <h1 className="hero-title">Learn Anything.<br /><span>Teach Anyone.</span></h1>
             <p className="hero-subtitle">Connect with industry experts for real-time, one-on-one mentorship. Stop searching, start learning.</p>
             <div className="hero-buttons">
-              <Link to="/login" className="btn-primary-hero">Start Your Journey <MoveRight size={20}/></Link>
+              <Link to="/signup" className="btn-primary-hero">Start Your Journey <MoveRight size={20}/></Link>
               <Link to="/skills" className="btn-secondary-hero">Explore Mentors</Link>
             </div>
           </div>
@@ -110,12 +107,11 @@ export default function LandingPage() {
             <div className="container">
                 <h2 className="cta-title">Ready to Start Your Journey?</h2>
                 <p className="cta-subtitle">Join thousands of learners and mentors today. Your next skill is just a conversation away.</p>
-                <Link to="/login" className="btn-primary-hero">Join SkillSwap for Free</Link>
+                <Link to="/signup" className="btn-primary-hero">Join SkillSwap for Free</Link>
             </div>
         </section>
       </main>
 
-      {/* === Footer === */}
       <footer className="main-footer">
         <div className="container footer-content">
           <div className="footer-about">
@@ -155,3 +151,4 @@ export default function LandingPage() {
     </div>
   );
 }
+

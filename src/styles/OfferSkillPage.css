@@ -1,17 +1,13 @@
+/* src/styles/OfferSkillPage.css */
+
 .offer-skill-page-container {
-    background-color: #f8fafc;
     font-family: 'Inter', sans-serif;
 }
 
 .offer-skill-main-content {
-    margin-left: 260px; /* Adjust to your sidebar width */
+    /* The margin is now handled by the global .main-content-area class */
     padding: 2.5rem;
     min-height: 100vh;
-    /* THE FIX: Removed the unnecessary 'width: 100vw;' */
-    transition: margin-left 0.3s ease-in-out;
-}
-body.sidebar-collapsed .offer-skill-main-content {
-    margin-left: 88px;
 }
 
 .offer-skill-header {
@@ -97,7 +93,7 @@ body.sidebar-collapsed .offer-skill-main-content {
 .form-group {
     margin-bottom: 1.5rem;
 }
-.form-group label {
+.form-group label, .form-group-label {
     display: block;
     font-weight: 600;
     color: #334155;
@@ -219,7 +215,10 @@ body.sidebar-collapsed .offer-skill-main-content {
 }
 .review-item {
     margin-bottom: 1rem;
+    font-size: 1rem;
 }
+.review-item strong { color: #1e293b; }
+.review-item ul { padding-left: 20px; margin: 0.5rem 0 0 0; }
 
 /* Navigation Buttons */
 .form-navigation {
@@ -342,3 +341,28 @@ body.sidebar-collapsed .offer-skill-main-content {
     border-color: #2563eb;
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
 }
+
+/* Access Denied Styles */
+.access-denied {
+    text-align: center;
+    padding: 3rem 2rem;
+}
+.access-denied-icon {
+    color: #2563eb;
+    margin-bottom: 1rem;
+}
+.access-denied h2 {
+    font-size: 1.75rem;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+}
+.access-denied p {
+    color: #64748b;
+    max-width: 450px;
+    margin: 0 auto 1.5rem auto;
+    line-height: 1.6;
+}
+.access-denied .btn-primary {
+    text-decoration: none;
+}
+

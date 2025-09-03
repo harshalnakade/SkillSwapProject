@@ -1,21 +1,25 @@
 /* src/index.css */
 
-/* === VARIABLES & FONT IMPORT === */
+/* === FONT IMPORT & GLOBAL VARIABLES === */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root {
-  --primary-blue: #2563eb;
-  --primary-blue-dark: #1d4ed8;
-  --neutral-dark: #1e293b;
-  --neutral-medium: #64748b;
-  --neutral-light: #f1f5f9;
-  --background-page: #f8fafc;
+  /* === MODERN SOFT COLOR PALETTE === */
+  --primary-blue: #8f194c;       /* Deep wine (main brand color) */
+  --primary-blue-dark: #6a1239;  /* Darker wine for hover/active */
+  --neutral-dark: #2c2c2c;       /* Dark gray for text */
+  --neutral-medium: #5a5a5a;     /* Medium gray for secondary text */
+  --neutral-light: #e5e5e5;      /* Light gray for borders */
+  --background-page: #fafafa;    /* Off-white, warm background */
+
+  /* === TYPOGRAPHY === */
   --font-sans: 'Inter', sans-serif;
+
+  /* === SIDEBAR WIDTHS === */
   --sidebar-width: 260px;
   --sidebar-width-collapsed: 88px;
 }
-
-/* === CSS RESET & GLOBAL DEFAULTS === */
+/* === CSS RESET & BODY DEFAULTS === */
 *, *::before, *::after {
   box-sizing: border-box;
 }
@@ -31,22 +35,20 @@ body {
 
 #root {
   min-height: 100vh;
+  /* THE FIX #1: Make the root container a flexbox */
+  display: flex; 
 }
 
-/* === MAIN CONTENT LAYOUT (THE CRITICAL FIX) === 
-  This class should be added to the <main> element of every page 
-  that uses the sidebar (Dashboard, Profile, Sessions, etc.)
-*/
+/* === MAIN CONTENT LAYOUT (FOR PAGES WITH A SIDEBAR) === */
 .main-content-area {
-  /* Default margin to make space for the expanded sidebar */
+  /* THE FIX #2: This makes the content area expand to fill all available space */
+  flex-grow: 1; 
   margin-left: var(--sidebar-width);
-  /* Smooth transition for when the sidebar collapses */
   transition: margin-left 0.3s ease-in-out;
 }
 
 /* This rule is activated by the JavaScript in your Sidebar component */
 body.sidebar-collapsed .main-content-area {
-  /* New margin for when the sidebar is collapsed */
   margin-left: var(--sidebar-width-collapsed);
 }
 
@@ -54,7 +56,6 @@ body.sidebar-collapsed .main-content-area {
 @media (max-width: 992px) {
   .main-content-area,
   body.sidebar-collapsed .main-content-area {
-    /* Adjust for the smaller "icon-only" sidebar on tablets */
     margin-left: 70px;
   }
 }
@@ -62,7 +63,7 @@ body.sidebar-collapsed .main-content-area {
 @media (max-width: 768px) {
   .main-content-area,
   body.sidebar-collapsed .main-content-area {
-    /* No margin on mobile as sidebar would typically overlay or be hidden */
     margin-left: 0;
   }
 }
+
