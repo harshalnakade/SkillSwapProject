@@ -30,8 +30,9 @@ const generateNext7Days = (availability, bookedSlots) => {
                 if (period === 'PM' && hours < 12) hours += 12;
                 if (period === 'AM' && hours === 12) hours = 0;
                 sessionDate.setHours(hours, parseInt(minutes), 0, 0);
-                const sessionDateStr = sessionDate.toLocaleString();
-                return !bookedSlots.some(booked => booked.toLocaleString() === sessionDateStr);
+                
+                // THE FIX: Compare numeric timestamps for reliability instead of strings
+                return !bookedSlots.some(bookedTimestamp => bookedTimestamp === sessionDate.getTime());
             });
             
             schedule.push({
@@ -73,7 +74,8 @@ export default function BookingPage() {
               where("status", "in", ["Pending", "Upcoming"])
           );
           const querySnapshot = await getDocs(sessionsQuery);
-          const bookedSlots = querySnapshot.docs.map(doc => doc.data().sessionTime.toDate());
+          // Get an array of timestamps for booked slots
+          const bookedSlots = querySnapshot.docs.map(doc => doc.data().sessionTime.toDate().getTime());
           
           if (skillData.availability) {
               setSchedule(generateNext7Days(skillData.availability, bookedSlots));
