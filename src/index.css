@@ -4,14 +4,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root {
-  --primary-blue: #2563eb;
-  --neutral-dark: #1e293b;
-  --background-page: #f8fafc;
+  /* === MODERN SOFT COLOR PALETTE === */
+  --primary-blue: #8f194c;       /* Deep wine (main brand color) */
+  --primary-blue-dark: #6a1239;  /* Darker wine for hover/active */
+  --neutral-dark: #2c2c2c;       /* Dark gray for text */
+  --neutral-medium: #5a5a5a;     /* Medium gray for secondary text */
+  --neutral-light: #e5e5e5;      /* Light gray for borders */
+  --background-page: #fafafa;    /* Off-white, warm background */
+
+  /* === TYPOGRAPHY === */
   --font-sans: 'Inter', sans-serif;
+
+  /* === SIDEBAR WIDTHS === */
   --sidebar-width: 260px;
   --sidebar-width-collapsed: 88px;
 }
-
 /* === CSS RESET & BODY DEFAULTS === */
 *, *::before, *::after {
   box-sizing: border-box;

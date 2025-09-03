@@ -1,22 +1,37 @@
 
 /* === VARIABLES & GLOBAL STYLES === */
 :root {
-  --primary-blue: #2563eb;
-  --primary-blue-dark: #1d4ed8;
-  --primary-blue-light: #eff6ff;
-  --success-green-light: rgba(16, 185, 129, 0.1);
-  --success-green-dark: #065f46;
-  --danger-red-light: rgba(239, 68, 68, 0.1);
-  --danger-red-dark: #b91c1c;
-  --neutral-dark: #1e293b;
-  --neutral-medium: #64748b;
-  --neutral-light: #f1f5f9;
-  --border-color: #e2e8f0;
-  --background-white: #ffffff;
+  /* === PRIMARY ACCENT (soft coral/pink) === */
+  --primary-blue: #f38ba0;        /* Soft coral for buttons/links */
+  --primary-blue-dark: #c0567a;   /* Muted deep pink for active states */
+  --primary-blue-light: #ffe4eb;  /* Very light pink tint for backgrounds */
+
+  /* === SUCCESS (soft mint green) === */
+  --success-green-light: rgba(102, 187, 106, 0.1);  /* Calm background */
+  --success-green-dark: #2e7d32;  /* Muted deep green */
+
+  /* === DANGER (soft orange-red) === */
+  --danger-red-light: rgba(239, 115, 115, 0.1);  /* Gentle warning background */
+  --danger-red-dark: #e53935;     /* Softer alert red */
+
+  /* === NEUTRALS (warm greys) === */
+  --neutral-dark: #475569;        /* Soft slate */
+  --neutral-medium: #7b8794;      /* Medium gray for text */
+  --neutral-light: #f1f3f5;       /* Very light warm gray background */
+  --border-color: #d9e2ec;        /* Subtle border gray */
+
+  /* === BACKGROUNDS & TEXT === */
+  --background-white: #ffffff;    
   --text-white: #ffffff;
+
+  /* === TYPOGRAPHY === */
   --font-sans: 'Inter', sans-serif;
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+  /* === SHADOWS (soft and airy) === */
+  --shadow-lg: 0 8px 20px -5px rgb(0 0 0 / 0.06), 
+               0 4px 6px -4px rgb(0 0 0 / 0.04);
 }
+
 
 /* === MAIN LAYOUT === */
 .auth-page-container {

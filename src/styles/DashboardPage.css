@@ -2,25 +2,32 @@
 :root {
   display: flex;
   min-height: 100vh;
-  --primary-blue: #2563eb;
-  --primary-blue-dark: #1d4ed8;
-  --primary-emerald: #10b981;
-  --primary-orange: #f97316;
-  --neutral-dark: #1e293b;
-  --neutral-medium: #64748b;
-  --neutral-light: #f1f5f9;
-  --border-color: #e2e8f0;
-  --background-white: #ffffff;
-  --text-white: #ffffff;
+
+  /* === BRAND COLORS (Wine Theme) === */
+  --primary-blue: #8f194c;       /* Deep wine */
+  --primary-blue-dark: #6a1239;  /* Darker wine */
+  --primary-emerald: #d4af37;    /* Gold accent */
+  --primary-orange: #e07a9e;     /* Soft rose accent */
+
+  /* === NEUTRALS === */
+  --neutral-dark: #2c2c2c;       /* Dark gray for text */
+  --neutral-medium: #5a5a5a;     /* Medium gray for secondary text */
+  --neutral-light: #e5e5e5;      /* Light gray for backgrounds */
+  --border-color: #e5e5e5;       /* Matching border */
+  --background-white: #ffffff;   /* White surfaces */
+  --text-white: #ffffff;         /* White text on wine bg */
+
+  /* === TYPOGRAPHY & EFFECTS === */
   --font-sans: 'Inter', sans-serif;
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.07);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 }
 
+
 .dashboard-page-container { background-color: var(--neutral-light); font-family: var(--font-sans); }
 .dashboard-main-content {
   margin-left: 260px;
-  width: calc(100% - 260px); /* NEW */
+   width: 83vw;
   padding: 2.5rem;
   min-height: 100vh;
   transition: all 0.3s ease-in-out;

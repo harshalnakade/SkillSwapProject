@@ -15,13 +15,13 @@
     border: none;
     font-size: 1rem;
     font-weight: 500;
-    color: #64748b;
+    color: #5a5a5a; /* medium gray */
     cursor: pointer;
     margin-bottom: 2rem;
     transition: color 0.2s;
 }
 .back-button:hover {
-    color: #1e293b;
+    color: #2c2c2c; /* dark neutral */
 }
 
 .booking-grid {
@@ -45,22 +45,22 @@
     height: 80px;
     border-radius: 50%;
     margin-bottom: 1rem;
-    border: 3px solid #e2e8f0;
+    border: 3px solid #e5e5e5;
 }
 .skill-details-panel h1 {
     font-size: 2rem;
     margin: 0 0 0.5rem 0;
-    color: #1e293b;
+    color: #2c2c2c; /* dark neutral */
     line-height: 1.2;
 }
 .mentor-name {
     font-size: 1.1rem;
-    color: #475569;
+    color: #444; /* softer gray */
     margin: 0 0 1.5rem 0;
 }
 .skill-description {
     line-height: 1.6;
-    color: #64748b;
+    color: #5a5a5a; /* medium neutral */
     margin-bottom: 1.5rem;
 }
 .details-tags {
@@ -73,8 +73,8 @@
     font-weight: 500;
     padding: 4px 12px;
     border-radius: 20px;
-    background-color: #eff6ff;
-    color: #1d4ed8;
+    background-color: #fce7ef; /* soft wine tint */
+    color: #8f194c; /* wine primary */
 }
 
 /* Right Panel: Availability */
@@ -86,9 +86,9 @@
 }
 .availability-panel h2 {
     font-size: 1.5rem;
-    color: #1e293b;
+    color: #2c2c2c;
     margin: 0 0 1.5rem 0;
-    border-bottom: 1px solid #e2e8f0;
+    border-bottom: 1px solid #e5e5e5;
     padding-bottom: 1rem;
     display: flex;
     align-items: center;
@@ -105,13 +105,13 @@
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    color: #334155;
+    color: #444;
 }
 /* Style for the date (e.g., "Sep 8") */
 .availability-day h5 span {
     font-size: 0.85rem;
     font-weight: 500;
-    color: #64748b;
+    color: #5a5a5a;
 }
 
 .slots-container {
@@ -131,27 +131,27 @@
     background-color: #ffffff;
     cursor: pointer;
     font-weight: 500;
-    color: #334155;
+    color: #2c2c2c;
     transition: all 0.2s ease;
 }
 .slot-btn:hover {
-    border-color: #2563eb;
-    background-color: #eff6ff;
-    color: #1d4ed8;
+    border-color: #8f194c;
+    background-color: #fce7ef;
+    color: #8f194c;
 }
 .slot-btn.selected {
-    background-color: #2563eb;
-    border-color: #2563eb;
+    background-color: #8f194c;
+    border-color: #8f194c;
     color: white;
 }
 .booking-footer {
     margin-top: 2rem;
     padding-top: 1.5rem;
-    border-top: 1px solid #e2e8f0;
+    border-top: 1px solid #e5e5e5;
     text-align: right;
 }
 .btn-confirm-booking {
-    background-color: #2563eb;
+    background-color: #8f194c;
     color: white;
     padding: 14px 28px;
     border: none;
@@ -166,7 +166,7 @@
     justify-content: center;
 }
 .btn-confirm-booking:hover {
-    background-color: #1d4ed8;
+    background-color: #6a1239; /* darker wine */
     transform: translateY(-2px);
     box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
 }
@@ -177,9 +177,13 @@
     box-shadow: none;
 }
 
-@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes spin { 
+  0% { transform: rotate(0deg); } 
+  100% { transform: rotate(360deg); } 
+}
 .spinner-light {
-  width: 20px; height: 20px;
+  width: 20px; 
+  height: 20px;
   border: 3px solid rgba(255, 255, 255, 0.3);
   border-top-color: white;
   border-radius: 50%;
@@ -191,7 +195,7 @@
     padding: 4rem;
     text-align: center;
     font-size: 1.25rem;
-    color: #64748b;
+    color: #5a5a5a;
 }
 
 /* Responsive */
@@ -203,4 +207,3 @@
         position: static;
     }
 }
-
