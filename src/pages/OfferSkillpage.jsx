@@ -88,8 +88,9 @@ export default function OfferSkillPage() {
           } else {
               await addDoc(collection(db, "skills"), {
                   teacherId: currentUser.uid,
-                  teacherName: currentUser.name || currentUser.displayName,
-                  teacherAvatar: currentUser.avatar || currentUser.photoURL,
+                  // UPDATED: Access name and avatar from customData, with fallbacks
+                  teacherName: currentUser.customData?.name || currentUser.displayName,
+                  teacherAvatar: currentUser.customData?.avatar || currentUser.photoURL,
                   ...formData,
                   createdAt: serverTimestamp(),
                   isVerified: true, rating: 0, reviewCount: 0,
@@ -106,7 +107,8 @@ export default function OfferSkillPage() {
   };
 
   const timeSlots = ["10:00 AM", "11:00 AM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM"];
-  const isTeacher = currentUser?.roles?.includes('teacher');
+  // UPDATED: Access roles from customData
+  const isTeacher = currentUser?.customData?.roles?.includes('teacher');
 
   return (
     <div className="offer-skill-page-container">
@@ -250,4 +252,3 @@ export default function OfferSkillPage() {
     </div>
   );
 }
-

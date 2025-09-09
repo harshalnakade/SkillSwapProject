@@ -1,14 +1,44 @@
-/* src/styles/SkillListings.css */
+/* === VARIABLES & GLOBAL STYLES === */
+:root {
+  /* === NEW EARTHY COLOR PALETTE === */
+  --c1-dusty-rose: #a46a64;
+  --c2-khaki: #997a53;
+  --c3-muted-gold: #a28d66;
+  --c4-light-taupe: #b1a389;
+  --c5-pale-sage: #cdc6a7;
+
+  /* === THEME MAPPING === */
+  --primary-accent: var(--c1-dusty-rose);
+  --primary-accent-dark: #8c5a54;
+  --background-body: #f7f5f1;
+  --background-card: #ffffff;
+  --background-hover: #faf9f7;
+  --text-dark: var(--c2-khaki);
+  --text-medium: var(--c3-muted-gold);
+  --text-light: var(--c4-light-taupe);
+  --text-white: #ffffff;
+  --border-color: rgba(177, 163, 137, 0.3);
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --border-radius: 16px;
+  --shadow-lg: 0 8px 16px -4px rgba(153, 122, 83, 0.1);
+  --sidebar-width-collapsed: 88px;
+  --sidebar-width-full: 260px;
+}
 
 /* === GENERAL LAYOUT & HEADER === */
 .skills-page-container {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-sans);
+  background-color: var(--background-body);
 }
 .skills-main-content {
-  /* The margin-left is now handled by the global .main-content-area class */
   padding: 2.5rem;
   min-height: 100vh;
+  margin-left: var(--sidebar-width-full);
+  transition: margin-left 0.3s ease-in-out;
   width: 80vw;
+}
+body.sidebar-collapsed .skills-main-content {
+    margin-left: var(--sidebar-width-collapsed);
 }
 .skills-header {
   margin-bottom: 2rem;
@@ -16,12 +46,12 @@
 .skills-title {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--text-dark);
   margin-bottom: 0.5rem;
 }
 .skills-subtitle {
   font-size: 1.125rem;
-  color: #64748b;
+  color: var(--text-medium);
 }
 
 /* === FILTERS BAR === */
@@ -30,9 +60,10 @@
   flex-wrap: wrap;
   gap: 1rem;
   padding: 1rem;
-  background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  background-color: var(--background-card);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-color);
   margin-bottom: 2.5rem;
   align-items: center;
 }
@@ -40,13 +71,13 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  background-color: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background-color: var(--background-hover);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 0.65rem 1rem;
 }
 .filter-icon {
-  color: #94a3b8;
+  color: var(--text-light);
 }
 .filter-group.search-filter {
   flex-grow: 1;
@@ -56,7 +87,7 @@
   background: transparent;
   outline: none;
   font-size: 1rem;
-  color: #334155;
+  color: var(--text-dark);
   width: 100%;
 }
 .filters-bar select {
@@ -70,19 +101,18 @@
   gap: 2rem;
 }
 .skill-card {
-  background-color: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  background-color: var(--background-card);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-lg);
   display: flex;
   flex-direction: column;
   cursor: pointer;
-  border: 1px solid transparent;
+  border: 1px solid var(--border-color);
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 .skill-card:hover {
   transform: translateY(-5px);
-  border-color: #2563eb;
-  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  border-color: var(--primary-accent);
 }
 .skill-card-header, .skill-card-body, .skill-card-footer {
   padding: 1.25rem 1.5rem;
@@ -104,7 +134,7 @@
 }
 .teacher-name {
   font-weight: 600;
-  color: #334155;
+  color: var(--text-dark);
 }
 .verified-badge {
   display: inline-flex;
@@ -112,8 +142,8 @@
   gap: 0.25rem;
   font-size: 0.75rem;
   font-weight: 500;
-  color: #166534;
-  background-color: #f0fdf4;
+  color: var(--c2-khaki);
+  background-color: rgba(153, 122, 83, 0.1);
   padding: 2px 6px;
   border-radius: 12px;
 }
@@ -122,20 +152,20 @@
   align-items: center;
   gap: 0.25rem;
   font-weight: 600;
-  color: #475569;
+  color: var(--text-medium);
 }
 .star-icon {
-  color: #f59e0b;
+  color: var(--c3-muted-gold);
 }
 .skill-card-body {
   flex-grow: 1;
-  border-top: 1px solid #f1f5f9;
-  border-bottom: 1px solid #f1f5f9;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
 }
 .skill-name {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #1e293b;
+  color: var(--text-dark);
   margin-top: 0.5rem;
 }
 .skill-card-footer {
@@ -154,24 +184,24 @@
   border-radius: 12px;
 }
 .tag-experience {
-  background-color: #fdf4ff;
-  color: #7e22ce;
-  border: 1px solid #f3e8ff;
+  background-color: rgba(164, 106, 100, 0.1);
+  color: var(--c1-dusty-rose);
+  border: 1px solid rgba(164, 106, 100, 0.2);
   display: inline-block;
   margin-bottom: 0.75rem;
 }
 .tag-level {
-  background-color: #eff6ff;
-  color: #1d4ed8;
+  background-color: rgba(153, 122, 83, 0.1);
+  color: var(--c2-khaki);
 }
 .tag-format {
-  background-color: #f0fdf4;
-  color: #166534;
+  background-color: rgba(162, 141, 102, 0.1);
+  color: var(--c3-muted-gold);
 }
 .view-details-link {
   font-size: 0.9rem;
   font-weight: 500;
-  color: #2563eb;
+  color: var(--primary-accent);
 }
 
 /* === SKILL DETAIL MODAL === */
@@ -181,7 +211,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(15, 23, 42, 0.6);
+  background-color: rgba(42, 36, 56, 0.6);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
@@ -195,13 +225,13 @@
 }
 
 .modal-content {
-  background-color: #ffffff;
-  border-radius: 16px;
+  background-color: var(--background-card);
+  border-radius: var(--border-radius);
   width: 90%;
   max-width: 700px;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
   position: relative;
   padding: 2rem;
   animation: slideUp 0.3s ease;
@@ -215,7 +245,7 @@
   position: absolute;
   top: 16px;
   right: 16px;
-  background: #f1f5f9;
+  background: var(--background-hover);
   border: none;
   border-radius: 50%;
   width: 36px;
@@ -224,12 +254,12 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: #64748b;
+  color: var(--text-medium);
   transition: all 0.2s;
 }
 .modal-close-btn:hover {
-  background-color: #e2e8f0;
-  color: #1e293b;
+  background-color: var(--border-color);
+  color: var(--text-dark);
 }
 
 .modal-header {
@@ -251,7 +281,7 @@
 .modal-teacher-name {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #1e293b;
+  color: var(--text-dark);
   margin: 0;
 }
 .modal-teacher-badges {
@@ -270,12 +300,12 @@
   border-radius: 12px;
 }
 .verified-badge-modal {
-  color: #166534;
-  background-color: #f0fdf4;
+  color: var(--c2-khaki);
+  background-color: rgba(153, 122, 83, 0.1);
 }
 .experience-badge-modal {
-  color: #7e22ce;
-  background-color: #fdf4ff;
+  color: var(--c1-dusty-rose);
+  background-color: rgba(164, 106, 100, 0.1);
 }
 .modal-rating {
   font-size: 1.25rem;
@@ -284,9 +314,10 @@
   font-size: 2rem;
   font-weight: 700;
   margin: 0 0 1rem 0;
+  color: var(--text-dark);
 }
 .modal-teacher-bio {
-  color: #475569;
+  color: var(--text-medium);
   line-height: 1.6;
   margin-bottom: 2rem;
 }
@@ -297,8 +328,9 @@
   font-size: 1.1rem;
   font-weight: 600;
   margin-bottom: 1rem;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--border-color);
   padding-bottom: 0.5rem;
+  color: var(--text-dark);
 }
 .syllabus-list {
   list-style: none;
@@ -306,12 +338,12 @@
 }
 .syllabus-list li {
   padding: 0.5rem 0;
-  border-bottom: 1px solid #f1f5f9;
-  color: #334155;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-medium);
 }
 .syllabus-list li::before {
   content: '✓';
-  color: #2563eb;
+  color: var(--primary-accent);
   margin-right: 0.75rem;
 }
 .reviews-list {
@@ -320,14 +352,14 @@
   gap: 1rem;
 }
 .review-item {
-  background-color: #f8fafc;
+  background-color: var(--background-hover);
   padding: 1rem;
   border-radius: 8px;
-  border-left: 3px solid #2563eb;
+  border-left: 3px solid var(--primary-accent);
 }
 .review-comment {
   font-style: italic;
-  color: #475569;
+  color: var(--text-medium);
   margin: 0 0 0.5rem 0;
 }
 .review-author {
@@ -340,7 +372,7 @@
   display: flex;
   gap: 1rem;
   justify-content: center;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid var(--border-color);
   padding-top: 2rem;
   margin-top: 1rem;
 }
@@ -357,19 +389,19 @@
   transition: all 0.2s;
 }
 .btn-message-modal {
-  background-color: #ffffff;
-  color: #334155;
-  border: 1px solid #cbd5e1;
+  background-color: var(--background-card);
+  color: var(--text-dark);
+  border: 1px solid var(--border-color);
 }
 .btn-message-modal:hover {
-  background-color: #f8fafc;
+  background-color: var(--background-hover);
 }
 .btn-request-modal {
-  background-color: #2563eb;
+  background-color: var(--primary-accent);
   color: white;
 }
 .btn-request-modal:hover {
-  background-color: #1d4ed8;
+  background-color: var(--primary-accent-dark);
   transform: translateY(-2px);
 }
 
@@ -388,8 +420,8 @@
 .spinner {
   width: 48px;
   height: 48px;
-  border: 5px solid #e2e8f0; /* Light grey */
-  border-top-color: #2563eb; /* Blue */
+  border: 5px solid var(--border-color);
+  border-top-color: var(--primary-accent);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -397,17 +429,17 @@
 .no-results {
   text-align: center;
   padding: 4rem 2rem;
-  background-color: #ffffff;
-  border-radius: 16px;
+  background-color: var(--background-card);
+  border-radius: var(--border-radius);
   margin-top: 2rem;
 }
 .no-results h3 {
   font-size: 1.75rem;
-  color: #1e293b;
+  color: var(--text-dark);
   margin-bottom: 0.5rem;
 }
 .no-results p {
-  color: #64748b;
+  color: var(--text-medium);
   margin-bottom: 1.5rem;
   max-width: 400px;
   margin-left: auto;
@@ -415,8 +447,8 @@
 }
 .btn-clear-filters {
   background: transparent;
-  color: #2563eb;
-  border: 1px solid #2563eb;
+  color: var(--primary-accent);
+  border: 1px solid var(--primary-accent);
   padding: 10px 20px;
   border-radius: 8px;
   font-weight: 600;
@@ -424,6 +456,6 @@
   transition: all 0.2s;
 }
 .btn-clear-filters:hover {
-  background-color: #2563eb;
+  background-color: var(--primary-accent);
   color: white;
 }

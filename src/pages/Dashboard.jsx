@@ -7,7 +7,7 @@ import { db } from "../firebase";
 import { collection, query, where, onSnapshot, orderBy } from "firebase/firestore";
 import "../styles/DashboardPage.css";
 
-// Helper functions (no changes needed)
+// Helper functions
 const formatDate = (dateObject) => {
     if (!dateObject?.toDate) return "Date TBD";
     return dateObject.toDate().toLocaleDateString("en-US", { month: 'long', day: 'numeric' });
@@ -22,42 +22,57 @@ const getGreeting = () => {
 export default function Dashboard() {
   const { currentUser } = useAuth();
   
-  // State for all live data
-  const [allSessions, setAllSessions] = useState([]);
+  // State for live data, fetched by status
   const [stats, setStats] = useState({ upcoming: 0, pending: 0, completed: 0 });
   const [upcomingSessions, setUpcomingSessions] = useState([]);
+  const [pendingSessions, setPendingSessions] = useState([]);
+  const [completedSessions, setCompletedSessions] = useState([]);
   const [recentMessages, setRecentMessages] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Effect to fetch all dashboard data in real-time
   useEffect(() => {
     if (!currentUser) return;
+    
+    let unsubscribes = [];
+    
+    // --- More efficient session fetching by status ---
+    const statuses = ['Upcoming', 'Pending', 'Completed'];
+    
+    statuses.forEach(status => {
+        let learnerData = [];
+        let mentorData = [];
+        
+        const qLearner = query(
+            collection(db, "sessions"),
+            where("learnerId", "==", currentUser.uid),
+            where("status", "==", status)
+        );
+        const qMentor = query(
+            collection(db, "sessions"),
+            where("mentorId", "==", currentUser.uid),
+            where("status", "==", status)
+        );
 
-    // --- Fetch Sessions for Stats and Upcoming Widget ---
-    const learnerSessionsQuery = query(
-      collection(db, "sessions"),
-      where("learnerId", "==", currentUser.uid)
-    );
-    const mentorSessionsQuery = query(
-      collection(db, "sessions"),
-      where("mentorId", "==", currentUser.uid)
-    );
-
-    const unsubscribeLearner = onSnapshot(learnerSessionsQuery, (snapshot) => {
-      const learnerSessions = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setAllSessions(prev => {
-          const nonLearnerSessions = prev.filter(s => s.learnerId !== currentUser.uid);
-          return [...nonLearnerSessions, ...learnerSessions];
-      });
-    });
-
-    const unsubscribeMentor = onSnapshot(mentorSessionsQuery, (snapshot) => {
-        const mentorSessions = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setAllSessions(prev => {
-            const nonMentorSessions = prev.filter(s => s.mentorId !== currentUser.uid);
-            return [...nonMentorSessions, ...mentorSessions];
+        const unsubLearner = onSnapshot(qLearner, (snapshot) => {
+            learnerData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            updateSessionState(status, [...learnerData, ...mentorData]);
         });
+        
+        const unsubMentor = onSnapshot(qMentor, (snapshot) => {
+            mentorData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            updateSessionState(status, [...learnerData, ...mentorData]);
+        });
+        
+        unsubscribes.push(unsubLearner, unsubMentor);
     });
+
+    const updateSessionState = (status, data) => {
+        const sortedData = data.sort((a, b) => (a.sessionTime?.toDate() || 0) - (b.sessionTime?.toDate() || 0));
+        if (status === 'Upcoming') setUpcomingSessions(sortedData);
+        if (status === 'Pending') setPendingSessions(sortedData);
+        if (status === 'Completed') setCompletedSessions(sortedData);
+    };
 
     // --- Fetch Recent Conversations ---
     const convosQuery = query(
@@ -65,7 +80,7 @@ export default function Dashboard() {
         where("participants", "array-contains", currentUser.uid),
         orderBy("lastTimestamp", "desc")
     );
-    const unsubscribeConvos = onSnapshot(convosQuery, (snapshot) => {
+    const unsubConvos = onSnapshot(convosQuery, (snapshot) => {
         const convosData = snapshot.docs.map(doc => {
             const data = doc.data();
             const otherUserIndex = data.participants.findIndex(uid => uid !== currentUser.uid);
@@ -77,29 +92,23 @@ export default function Dashboard() {
         });
         setRecentMessages(convosData);
     });
+    unsubscribes.push(unsubConvos);
 
-    // We can set loading to false here, as the listeners will update the state when they have data.
     setLoading(false);
 
     return () => {
-      unsubscribeLearner();
-      unsubscribeMentor();
-      unsubscribeConvos();
+      unsubscribes.forEach(unsub => unsub());
     };
   }, [currentUser]);
 
-  // A separate effect to calculate stats AFTER sessions have been fetched
+  // Effect to calculate stats when session data changes
   useEffect(() => {
-    const upcoming = allSessions.filter(s => s.status === 'Upcoming').length;
-    const pending = allSessions.filter(s => s.status === 'Pending').length;
-    const completed = allSessions.filter(s => s.status === 'Completed').length;
-    setStats({ upcoming, pending, completed });
-
-    const upcomingList = allSessions
-      .filter(s => s.status === 'Upcoming')
-      .sort((a, b) => a.sessionTime.toDate() - b.sessionTime.toDate());
-    setUpcomingSessions(upcomingList);
-  }, [allSessions]);
+    setStats({
+        upcoming: upcomingSessions.length,
+        pending: pendingSessions.length,
+        completed: completedSessions.length
+    });
+  }, [upcomingSessions, pendingSessions, completedSessions]);
 
 
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
@@ -109,7 +118,7 @@ export default function Dashboard() {
       return (
           <div className="dashboard-page-container">
               <Sidebar />
-              <main className="dashboard-main-content main-content-area">
+              <main className="dashboard-main-content">
                   <div className="loading-state">Loading Dashboard...</div>
               </main>
           </div>
@@ -119,10 +128,9 @@ export default function Dashboard() {
   return (
     <div className="dashboard-page-container">
       <Sidebar />
-      <main className="dashboard-main-content main-content-area">
+      <main className="dashboard-main-content">
         <header className="dashboard-header">
           <div>
-            {/* THE FIX: Provide a fallback for the name while it loads */}
             <h1 className="header-title">{greeting}, {currentUser.name || currentUser.displayName || "User"}! 👋</h1>
             <p className="header-subtitle">It's {today}. Let's make today productive.</p>
           </div>
@@ -131,9 +139,9 @@ export default function Dashboard() {
                 <Search className="search-icon" size={20}/>
                 <input type="text" placeholder="Search skills, mentors..." />
             </div>
-            {currentUser.roles.includes('learner') && (
-                 <Link to="/skills" className="btn-primary">Request a Session</Link>
-            )}
+           {currentUser.customData?.roles?.includes('learner') && (
+    <Link to="/skills" className="btn-primary">Request a Session</Link>
+)}
           </div>
         </header>
 
@@ -174,19 +182,19 @@ export default function Dashboard() {
 
           <div className="widget-card gamification">
              <div className="streak-widget">
-                 <Zap size={24} className="streak-icon"/>
-                 <div className="streak-info">
-                     <span className="stat-value">5 Days</span>
-                     <span className="stat-label">Learning Streak</span>
-                 </div>
+                  <Zap size={24} className="streak-icon"/>
+                  <div className="streak-info">
+                      <span className="stat-value">5 Days</span>
+                      <span className="stat-label">Learning Streak</span>
+                  </div>
              </div>
              <div className="achievements-widget">
-                 <h4 className="widget-subtitle"><Award size={18}/> Achievements</h4>
-                 <div className="achievements-list">
-                     {['🥇', '🔥', '☕'].map((icon, i) => <div key={i} className="achievement-badge">{icon}</div>)}
-                 </div>
+                  <h4 className="widget-subtitle"><Award size={18}/> Achievements</h4>
+                  <div className="achievements-list">
+                      {['🥇', '🔥', '☕'].map((icon, i) => <div key={i} className="achievement-badge">{icon}</div>)}
+                  </div>
              </div>
-           </div>
+            </div>
           
            <div className="widget-card recent-messages">
              <h3 className="widget-title"><MessageSquare size={20}/> Recent Messages</h3>
@@ -208,20 +216,20 @@ export default function Dashboard() {
            </div>
           
           <div className="widget-card action-card-container">
-            {currentUser.roles.includes('learner') && (
-                <Link to="/skills" className="action-card find-skill">
-                    <h3>Find a Mentor</h3>
-                    <p>Explore skills taught by experts.</p>
-                    <button className="btn-secondary">Explore Now</button>
-                </Link>
-            )}
-            {currentUser.roles.includes('teacher') && (
-                <Link to="/offer-skill" className="action-card offer-skill">
-                    <h3>Offer Your Skill</h3>
-                    <p>Share your knowledge with others.</p>
-                    <button className="btn-secondary">Get Started</button>
-                </Link>
-            )}
+            {currentUser.customData?.roles?.includes('learner') && (
+    <Link to="/skills" className="action-card find-skill">
+        <h3>Find a Mentor</h3>
+        <p>Explore skills taught by experts.</p>
+        <button className="btn-secondary">Explore Now</button>
+    </Link>
+)}
+{currentUser.customData?.roles?.includes('teacher') && (
+    <Link to="/offer-skill" className="action-card offer-skill">
+        <h3>Offer Your Skill</h3>
+        <p>Share your knowledge with others.</p>
+        <button className="btn-secondary">Get Started</button>
+    </Link>
+)}
           </div>
         </div>
       </main>

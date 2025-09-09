@@ -1,8 +1,8 @@
 /* === VARIABLES & GLOBAL STYLES === */
 :root {
   /* === PRIMARY ACCENT (Cool Muted Tones) === */
-  --primary-accent: #4a4e69;      /* Ultra Violet for buttons/links */
-  --primary-accent-dark: #22223b;  /* Space Cadet for active states */
+  --primary-accent: #4a4e69; /* Ultra Violet for buttons/links */
+  --primary-accent-dark: #22223b; /* Space Cadet for active states */
   --primary-accent-light: #f2e9e4; /* Isabelline for light backgrounds */
 
   /* === SUCCESS (Vibrant Green) - Kept for semantic clarity === */
@@ -14,14 +14,14 @@
   --danger-red-dark: #B91C1C;
 
   /* === NEUTRALS (Based on the new palette) === */
-  --text-dark: #22223b;           /* Space Cadet for headings */
-  --text-medium: #4a4e69;         /* Ultra Violet for body text */
-  --text-light: #9a8c98;          /* Rose Quartz for placeholders */
-  --border-color: #c9ada7;        /* Pale Dogwood for borders */
+  --text-dark: #22223b; /* Space Cadet for headings */
+  --text-medium: #4a4e69; /* Ultra Violet for body text */
+  --text-light: #9a8c98; /* Rose Quartz for placeholders */
+  --border-color: #c9ada7; /* Pale Dogwood for borders */
   
   /* === BACKGROUNDS === */
-  --background-body: #f2e9e4;      /* Isabelline for main background */
-  --background-card: #FFFFFF;     /* Pure white for the form card */
+  --background-body: #f2e9e4; /* Isabelline for main background */
+  --background-card: #FFFFFF; /* Pure white for the form card */
   --text-white: #FFFFFF;
 
   /* === TYPOGRAPHY === */
@@ -40,7 +40,7 @@
   font-family: var(--font-sans);
   background-color: var(--background-body);
   width: 100vw;
-  align-items: center;
+  align-items: stretch; /* Make children stretch to full height */
   justify-content: center;
 }
 
@@ -53,7 +53,7 @@
   justify-content: center;
   align-items: center;
   padding: 3rem;
-  height: 100vh;
+  min-height: 100vh; /* Ensure it takes full height */
 }
 .branding-content { text-align: center; max-width: 450px; }
 .branding-logo {
@@ -67,6 +67,8 @@
 .auth-form-panel {
   flex: 1; display: flex; justify-content: center;
   align-items: center; padding: 3rem;
+  overflow-y: auto; /* Allow scrolling on form side if content overflows */
+  min-height: 100vh;
 }
 .form-container { 
   width: 100%; max-width: 450px;
@@ -96,8 +98,7 @@
   background-color: #faf7f5; /* A hint of the body color for inputs */
   transition: border-color 0.2s, box-shadow 0.2s;
 }
-.input-group input[name="password"], 
-.input-group input[name="confirmPassword"] { padding-right: 3.5rem; }
+.input-group input[type="password"] { padding-right: 3.5rem; }
 .input-group input::placeholder { color: var(--text-light); }
 .input-group input:focus {
   outline: none; border-color: var(--primary-accent);
@@ -111,7 +112,7 @@
 .password-toggle-btn:hover { color: var(--primary-accent); }
 
 /* Error & Success Messages */
-.error-message { color: var(--danger-red-dark); font-size: 0.875rem; margin-top: 0.5rem; }
+.error-message { color: var(--danger-red-dark); font-size: 0.875rem; margin-top: 0.5rem; display: block; min-height: 1.2em; }
 .form-error, .success-message {
   padding: 1rem; border-radius: var(--border-radius); text-align: center;
   margin-bottom: 1.5rem; font-size: 0.95rem; font-weight: 500;
@@ -142,20 +143,20 @@
 .custom-checkbox input { margin-right: 0.5rem; }
 .forgot-password-link {
   color: var(--primary-accent); text-decoration: none; font-weight: 600;
-  cursor: pointer; font-size: 0.9rem;
+  cursor: pointer; font-size: 0.9rem; background: none; border: none; padding: 0;
 }
 .forgot-password-link:hover { text-decoration: underline; }
 
 /* Submit Button & Spinner */
 .submit-btn {
-  width: 100%; padding: 1rem; background-color: var(--primary-accent);
+  width: 100%; padding: 1rem; background: var(--primary-accent);
   color: var(--text-white);
   border: none; border-radius: var(--border-radius);
   font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
   display: flex; justify-content: center; align-items: center;
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 }
-.submit-btn:hover { background-color: var(--primary-accent-dark); box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+.submit-btn:hover:not(:disabled) { background-color: var(--primary-accent-dark); box-shadow: var(--shadow-lg); transform: translateY(-2px); }
 .submit-btn:disabled { background-color: #9a8c98; cursor: not-allowed; transform: none; box-shadow: none; }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 .spinner {
@@ -182,13 +183,15 @@
 .terms-text a:hover { text-decoration: underline; }
 
 /* Forgot Password View */
-.forgot-password-view { animation: fadeIn 0.5s ease; }
-.back-to-login { display: block; width: 100%; text-align: center; margin-top: 1.5rem; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.forgot-password-view, .signup-view, .login-view { animation: fadeIn 0.4s ease; }
+.back-to-login { display: inline-block; width: 100%; text-align: center; margin-top: 1.5rem; }
 
 /* Responsive */
 @media (max-width: 992px) {
   .auth-branding-panel { display: none; }
-  .auth-page-container { align-items: flex-start; padding: 2rem 1rem; }
+  .auth-page-container { align-items: flex-start; padding: 2rem 1rem; height: auto; min-height: 100vh;}
+  .auth-form-panel { padding: 0; align-items: flex-start; }
   .form-container { 
     width: 100%; max-width: 100%;
     padding: 2rem; box-shadow: none; border: none;

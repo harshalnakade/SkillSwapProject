@@ -1,18 +1,14 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { LayoutDashboard, BookOpen, Calendar, MessageSquare, PlusCircle, LogOut, Search } from 'lucide-react';
-
-// NEW: Import useAuth and Firebase's signOut function
 import { useAuth } from "../context/AuthContext";
 import { auth } from "../firebase";
 import { signOut } from "firebase/auth";
-
 import './Sidebar.css';
 
 export default function Sidebar() {
   const navigate = useNavigate();
   const { currentUser } = useAuth(); // Get the live user data
 
-  // NEW: Functional logout handler
   const handleLogout = async () => {
     try {
       await signOut(auth);
@@ -40,37 +36,40 @@ export default function Sidebar() {
           <li><NavLink to="/messages" className="menu-item"><MessageSquare size={20} /><span>Messages</span></NavLink></li>
         </ul>
 
-        {/* === Quick Actions (Now uses live user roles) === */}
+        {/* === Quick Actions (UPDATED with customData) === */}
         <div className="quick-actions">
-           <p className="menu-title">QUICK ACTIONS</p>
-           
-           {/* This button only shows if the logged-in user is a 'teacher' */}
-           {currentUser?.roles?.includes('teacher') && (
-             <Link to="/offer-skill" className="action-btn">
-               <PlusCircle size={20} />
-               <span>Offer a New Skill</span>
-             </Link>
-           )}
+            <p className="menu-title">QUICK ACTIONS</p>
+            
+            {/* This button only shows if the logged-in user is a 'teacher' */}
+            {currentUser?.customData?.roles?.includes('teacher') && (
+              <Link to="/offer-skill" className="action-btn">
+                <PlusCircle size={20} />
+                <span>Offer a New Skill</span>
+              </Link>
+            )}
 
-           {/* This button only shows if the logged-in user is a 'learner' */}
-           {currentUser?.roles?.includes('learner') && (
-            <Link to="/skills" className="action-btn secondary">
-               <Search size={20} />
-               <span>Find a Mentor</span>
-            </Link>
-           )}
+            {/* This button only shows if the logged-in user is a 'learner' */}
+            {currentUser?.customData?.roles?.includes('learner') && (
+              <Link to="/skills" className="action-btn secondary">
+                <Search size={20} />
+                <span>Find a Mentor</span>
+              </Link>
+            )}
         </div>
       </div>
 
-
-      {/* === Sidebar Footer with User Profile (Now uses live data) === */}
+      {/* === Sidebar Footer with User Profile (UPDATED with customData) === */}
       <div className="sidebar-footer">
         {currentUser ? (
           <>
             <NavLink to="/profile" className="user-profile-link">
-              <img src={currentUser.avatar || currentUser.photoURL} alt={currentUser.name} className="user-avatar" />
+              <img 
+                src={currentUser.customData?.avatar || currentUser.photoURL || 'https://via.placeholder.com/150'} 
+                alt={currentUser.customData?.name || currentUser.displayName} 
+                className="user-avatar" 
+              />
               <div className="user-info">
-                <span className="user-name">{currentUser.name || currentUser.displayName}</span>
+                <span className="user-name">{currentUser.customData?.name || currentUser.displayName}</span>
                 <span className="user-role">View Profile</span>
               </div>
             </NavLink>
@@ -79,7 +78,7 @@ export default function Sidebar() {
             </button>
           </>
         ) : (
-            // NEW: Shows a loading skeleton while user data is being fetched
+            // Shows a loading skeleton while user data is being fetched
             <div className="user-profile-link skeleton">
                 <div className="user-avatar skeleton-avatar"></div>
                 <div className="user-info">
@@ -92,4 +91,3 @@ export default function Sidebar() {
     </nav>
   );
 };
-

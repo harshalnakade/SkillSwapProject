@@ -14,35 +14,39 @@ export function useAuth() {
 // Create the provider component
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
-  const [loading, setLoading] = useState(true); // To check if auth state is loaded
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // This listener runs whenever the user's login state changes.
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      try {
-        if (user) {
-          // User is logged in. Fetch their custom data from Firestore.
-          const userDocRef = doc(db, 'users', user.uid);
-          const userDocSnap = await getDoc(userDocRef);
-          if (userDocSnap.exists()) {
-            // Combine the auth data with the firestore data
-            setCurrentUser({ ...user, ...userDocSnap.data() });
-          } else {
-            // This can happen with social logins for the first time
-            setCurrentUser(user);
-          }
-        } else {
-          // User is signed out
-          setCurrentUser(null);
-        }
-      } catch (error) {
-          console.error("Error fetching user data:", error);
-          setCurrentUser(null); // Log out user on error to be safe
-      } finally {
-          // THE FIX: This block will run regardless of success or failure,
-          // ensuring the loading state is always turned off.
-          setLoading(false);
-      }
+      try {
+        if (user) {
+          // User is logged in. Keep the original Firebase user object.
+          // This object has all the necessary auth methods like getIdToken().
+          const authUser = user;
+
+          // Now, fetch their custom data from Firestore.
+          const userDocRef = doc(db, 'users', user.uid);
+          const userDocSnap = await getDoc(userDocRef);
+
+          if (userDocSnap.exists()) {
+            // Attach the Firestore data as a new property.
+            // This avoids destroying the original authUser object.
+            authUser.customData = userDocSnap.data();
+          }
+          
+          // Set the complete user object (with auth methods and custom data) in state.
+          setCurrentUser(authUser);
+
+        } else {
+          // User is signed out
+          setCurrentUser(null);
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        setCurrentUser(null); // Log out user on error to be safe
+      } finally {
+        setLoading(false);
+      }
     });
 
     // Cleanup the listener when the component unmounts
@@ -54,10 +58,10 @@ export function AuthProvider({ children }) {
     loading,
   };
 
-  // We always render children now. The ProtectedRoute will handle the loading UI.
   return (
     <AuthContext.Provider value={value}>
-      {children}
+      {!loading && children}
     </AuthContext.Provider>
   );
 }
+
