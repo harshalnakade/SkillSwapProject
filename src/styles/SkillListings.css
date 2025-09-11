@@ -1,26 +1,26 @@
 /* === VARIABLES & GLOBAL STYLES === */
 :root {
-  /* === NEW EARTHY COLOR PALETTE === */
-  --c1-dusty-rose: #a46a64;
-  --c2-khaki: #997a53;
-  --c3-muted-gold: #a28d66;
-  --c4-light-taupe: #b1a389;
-  --c5-pale-sage: #cdc6a7;
+  /* === WINE COLOR PALETTE === */
+  --c1-wine: #8f194c;      /* Primary Wine */
+  --c2-wine-dark: #6a1239;  /* Deep Wine */
+  --c3-soft-wine: #fce7ef;  /* Soft Tint for highlights/hover */
+  --c4-rose-taupe: #b76d82;  /* Muted Rose Taupe for secondary text */
+  --c5-blush: #f7c6d9;       /* Pale Blush for accents */
 
   /* === THEME MAPPING === */
-  --primary-accent: var(--c1-dusty-rose);
-  --primary-accent-dark: #8c5a54;
-  --background-body: #f7f5f1;
-  --background-card: #ffffff;
-  --background-hover: #faf9f7;
-  --text-dark: var(--c2-khaki);
-  --text-medium: var(--c3-muted-gold);
-  --text-light: var(--c4-light-taupe);
+  --primary-accent: var(--c1-wine);
+  --primary-accent-dark: var(--c2-wine-dark);
+  --background-body: #fdf9fb;      /* Subtle soft wine background */
+  --background-card: #ffffff;      /* Cards remain clean */
+  --background-hover: var(--c3-soft-wine);
+  --text-dark: var(--c1-wine);        /* Strong wine for headings */
+  --text-medium: var(--c4-rose-taupe);/* Taupe for secondary text */
+  --text-light: var(--c5-blush);      /* Blush for muted elements */
   --text-white: #ffffff;
-  --border-color: rgba(177, 163, 137, 0.3);
+  --border-color: rgba(143, 25, 76, 0.2); /* Wine-tinted border */
   --font-sans: 'Inter', system-ui, sans-serif;
   --border-radius: 16px;
-  --shadow-lg: 0 8px 16px -4px rgba(153, 122, 83, 0.1);
+  --shadow-lg: 0 8px 16px -4px rgba(143, 25, 76, 0.15); /* Softer Wine shadow */
   --sidebar-width-collapsed: 88px;
   --sidebar-width-full: 260px;
 }
@@ -41,7 +41,7 @@ body.sidebar-collapsed .skills-main-content {
     margin-left: var(--sidebar-width-collapsed);
 }
 .skills-header {
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
 }
 .skills-title {
   font-size: 2.5rem;
@@ -59,12 +59,12 @@ body.sidebar-collapsed .skills-main-content {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-  padding: 1rem;
+  padding: 1.5rem;
   background-color: var(--background-card);
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-lg);
   border: 1px solid var(--border-color);
-  margin-bottom: 2.5rem;
+  margin-bottom: 3rem;
   align-items: center;
 }
 .filter-group {
@@ -73,11 +73,11 @@ body.sidebar-collapsed .skills-main-content {
   gap: 0.75rem;
   background-color: var(--background-hover);
   border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 0.65rem 1rem;
+  border-radius: 12px;
+  padding: 0.75rem 1.25rem;
 }
 .filter-icon {
-  color: var(--text-light);
+  color: var(--c4-rose-taupe);
 }
 .filter-group.search-filter {
   flex-grow: 1;
@@ -97,8 +97,8 @@ body.sidebar-collapsed .skills-main-content {
 /* === SKILLS GRID & CARDS === */
 .skills-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 2.5rem;
 }
 .skill-card {
   background-color: var(--background-card);
@@ -111,11 +111,12 @@ body.sidebar-collapsed .skills-main-content {
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 .skill-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-8px);
   border-color: var(--primary-accent);
+  box-shadow: 0 12px 24px -6px rgba(143, 25, 76, 0.2);
 }
 .skill-card-header, .skill-card-body, .skill-card-footer {
-  padding: 1.25rem 1.5rem;
+  padding: 1.5rem;
 }
 .skill-card-header {
   display: flex;
@@ -131,6 +132,7 @@ body.sidebar-collapsed .skills-main-content {
   width: 40px;
   height: 40px;
   border-radius: 50%;
+  object-fit: cover;
 }
 .teacher-name {
   font-weight: 600;
@@ -142,8 +144,8 @@ body.sidebar-collapsed .skills-main-content {
   gap: 0.25rem;
   font-size: 0.75rem;
   font-weight: 500;
-  color: var(--c2-khaki);
-  background-color: rgba(153, 122, 83, 0.1);
+  color: var(--primary-accent);
+  background-color: var(--background-hover);
   padding: 2px 6px;
   border-radius: 12px;
 }
@@ -155,7 +157,7 @@ body.sidebar-collapsed .skills-main-content {
   color: var(--text-medium);
 }
 .star-icon {
-  color: var(--c3-muted-gold);
+  color: var(--c4-rose-taupe);
 }
 .skill-card-body {
   flex-grow: 1;
@@ -166,7 +168,8 @@ body.sidebar-collapsed .skills-main-content {
   font-size: 1.25rem;
   font-weight: 600;
   color: var(--text-dark);
-  margin-top: 0.5rem;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
 }
 .skill-card-footer {
   display: flex;
@@ -176,6 +179,7 @@ body.sidebar-collapsed .skills-main-content {
 .skill-tags {
   display: flex;
   gap: 0.5rem;
+  flex-wrap: wrap;
 }
 .tag {
   font-size: 0.8rem;
@@ -183,20 +187,9 @@ body.sidebar-collapsed .skills-main-content {
   padding: 4px 10px;
   border-radius: 12px;
 }
-.tag-experience {
-  background-color: rgba(164, 106, 100, 0.1);
-  color: var(--c1-dusty-rose);
-  border: 1px solid rgba(164, 106, 100, 0.2);
-  display: inline-block;
-  margin-bottom: 0.75rem;
-}
 .tag-level {
-  background-color: rgba(153, 122, 83, 0.1);
-  color: var(--c2-khaki);
-}
-.tag-format {
-  background-color: rgba(162, 141, 102, 0.1);
-  color: var(--c3-muted-gold);
+  background-color: var(--background-hover);
+  color: var(--primary-accent);
 }
 .view-details-link {
   font-size: 0.9rem;
@@ -204,43 +197,92 @@ body.sidebar-collapsed .skills-main-content {
   color: var(--primary-accent);
 }
 
-/* === SKILL DETAIL MODAL === */
+/* ===== NEW: Skill Card Review Snippets ===== */
+.skill-reviews-preview {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.review-snippet {
+  background-color: var(--background-hover);
+  border-left: 3px solid var(--border-color);
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+}
+.review-snippet-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+.review-snippet .review-author {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+.review-rating-snippet {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+  color: var(--text-medium);
+}
+.review-comment-snippet {
+  font-size: 0.85rem;
+  color: var(--text-medium);
+  font-style: italic;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.no-reviews {
+  font-size: 0.85rem;
+  color: var(--text-medium);
+  text-align: center;
+  padding: 1rem;
+  background-color: var(--background-hover);
+  border-radius: 8px;
+  margin-top: 1rem;
+}
+/* === REFINED SKILL DETAIL MODAL - FULL DESIGN === */
+
+/* --- OVERLAY --- */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(42, 36, 56, 0.6);
-  backdrop-filter: blur(4px);
+  background-color: rgba(42, 36, 56, 0.75); /* slightly darker for better contrast */
+  backdrop-filter: blur(10px); /* stronger blur for glass effect */
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 2000;
-  animation: fadeIn 0.3s ease;
-}
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  padding: 1rem;
+  animation: fadeIn 0.25s ease;
 }
 
+/* --- MODAL CONTENT --- */
 .modal-content {
-  background-color: var(--background-card);
-  border-radius: var(--border-radius);
-  width: 90%;
-  max-width: 700px;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+  background-color: rgba(255, 255, 255, 0.95); /* glass-like semi-transparent */
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 680px;
+  max-height: 85vh;
+  padding: 2rem 2rem 1.5rem 2rem;
+  box-shadow: 0 25px 40px rgba(0, 0, 0, 0.18);
   position: relative;
-  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   animation: slideUp 0.3s ease;
 }
-@keyframes slideUp {
-  from { transform: translateY(20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
 
+/* --- CLOSE BUTTON --- */
 .modal-close-btn {
   position: absolute;
   top: 16px;
@@ -256,206 +298,356 @@ body.sidebar-collapsed .skills-main-content {
   cursor: pointer;
   color: var(--text-medium);
   transition: all 0.2s;
+  z-index: 10;
 }
 .modal-close-btn:hover {
   background-color: var(--border-color);
   color: var(--text-dark);
+  transform: scale(1.1);
 }
 
+/* --- MODAL BODY --- */
+.modal-body {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 0;
+  margin: 1rem 0;
+  max-height: calc(85vh - 220px); /* accommodate header & footer */
+}
+
+/* --- HEADER --- */
 .modal-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   margin-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
 }
+
 .modal-teacher-info {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.75rem;
 }
+
 .modal-teacher-avatar {
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
+  object-fit: cover;
 }
+
 .modal-teacher-name {
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-weight: 600;
   color: var(--text-dark);
   margin: 0;
 }
+
 .modal-teacher-badges {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-top: 4px;
+  gap: 0.4rem;
+  margin-top: 2px;
 }
-.verified-badge-modal, .experience-badge-modal {
+
+.verified-badge-modal {
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 500;
-  padding: 2px 8px;
-  border-radius: 12px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  color: var(--primary-accent);
+  background-color: var(--background-hover);
 }
-.verified-badge-modal {
-  color: var(--c2-khaki);
-  background-color: rgba(153, 122, 83, 0.1);
-}
-.experience-badge-modal {
-  color: var(--c1-dusty-rose);
-  background-color: rgba(164, 106, 100, 0.1);
-}
+
 .modal-rating {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--text-dark);
+  font-weight: 600;
 }
+
+/* --- TITLE & BIO --- */
 .modal-skill-title {
   font-size: 2rem;
   font-weight: 700;
-  margin: 0 0 1rem 0;
+  margin-bottom: 0.5rem;
   color: var(--text-dark);
+  line-height: 1.2;
 }
+
 .modal-teacher-bio {
   color: var(--text-medium);
   line-height: 1.6;
+  font-size: 0.95rem;
   margin-bottom: 2rem;
+  max-width: 70ch;
 }
+
+/* --- SECTIONS --- */
 .modal-section {
   margin-bottom: 2rem;
 }
+
 .modal-section-title {
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 600;
-  margin-bottom: 1rem;
-  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 0.75rem;
   padding-bottom: 0.5rem;
   color: var(--text-dark);
+  border-bottom: 1px solid var(--border-color);
 }
+
+/* --- MENTOR STATS --- */
+.mentor-stats {
+  display: flex;
+  gap: 1.5rem;
+  background-color: var(--background-hover);
+  padding: 1rem;
+  border-radius: 14px;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--text-dark);
+  flex-grow: 1;
+}
+
+.stat-item svg {
+  width: 24px;
+  height: 24px;
+  color: var(--primary-accent);
+}
+
+.stat-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+}
+
+.stat-text strong {
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.stat-text span {
+  font-size: 0.85rem;
+  color: var(--text-medium);
+}
+
+/* --- SYLLABUS --- */
 .syllabus-list {
   list-style: none;
   padding-left: 0;
 }
+
 .syllabus-list li {
-  padding: 0.5rem 0;
+  padding: 0.65rem 0.25rem;
   border-bottom: 1px solid var(--border-color);
   color: var(--text-medium);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
+
+.syllabus-list li:last-child {
+  border-bottom: none;
+}
+
 .syllabus-list li::before {
   content: '✓';
   color: var(--primary-accent);
-  margin-right: 0.75rem;
+  font-weight: 600;
+  font-size: 1rem;
 }
+
+/* --- REVIEWS --- */
 .reviews-list {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
+
 .review-item {
   background-color: var(--background-hover);
   padding: 1rem;
-  border-radius: 8px;
+  border-radius: 10px;
   border-left: 3px solid var(--primary-accent);
 }
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.4rem;
+}
+
+.review-author {
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.review-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-medium);
+}
+
 .review-comment {
   font-style: italic;
   color: var(--text-medium);
-  margin: 0 0 0.5rem 0;
-}
-.review-author {
-  text-align: right;
-  display: block;
-  font-weight: 500;
+  margin: 0;
+  padding-left: 0.5rem;
+  line-height: 1.5;
 }
 
+/* --- FOOTER BUTTONS --- */
 .modal-footer {
   display: flex;
-  gap: 1rem;
-  justify-content: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding-top: 1rem;
   border-top: 1px solid var(--border-color);
-  padding-top: 2rem;
-  margin-top: 1rem;
+  flex-wrap: wrap;
 }
-.btn-request-modal, .btn-message-modal {
+
+.btn-request-modal,
+.btn-message-modal {
+  flex: 1 1 48%;
+  min-width: 120px;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
-  padding: 14px 28px;
-  border: none;
+  padding: 12px 24px;
   border-radius: 8px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
 }
+
 .btn-message-modal {
   background-color: var(--background-card);
   color: var(--text-dark);
   border: 1px solid var(--border-color);
 }
+
 .btn-message-modal:hover {
   background-color: var(--background-hover);
+  border-color: var(--primary-accent);
 }
+
 .btn-request-modal {
   background-color: var(--primary-accent);
   color: white;
+  box-shadow: 0 4px 8px rgba(143, 25, 76, 0.2);
 }
+
 .btn-request-modal:hover {
   background-color: var(--primary-accent-dark);
   transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(143, 25, 76, 0.3);
 }
 
-.loading-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 4rem;
+/* --- ANIMATIONS --- */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
-.spinner {
-  width: 48px;
-  height: 48px;
-  border: 5px solid var(--border-color);
-  border-top-color: var(--primary-accent);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
+/* --- SCROLLBAR STYLING --- */
+.modal-body::-webkit-scrollbar {
+  width: 6px;
 }
 
-.no-results {
-  text-align: center;
-  padding: 4rem 2rem;
-  background-color: var(--background-card);
-  border-radius: var(--border-radius);
-  margin-top: 2rem;
-}
-.no-results h3 {
-  font-size: 1.75rem;
-  color: var(--text-dark);
-  margin-bottom: 0.5rem;
-}
-.no-results p {
-  color: var(--text-medium);
-  margin-bottom: 1.5rem;
-  max-width: 400px;
-  margin-left: auto;
-  margin-right: auto;
-}
-.btn-clear-filters {
-  background: transparent;
-  color: var(--primary-accent);
-  border: 1px solid var(--primary-accent);
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.btn-clear-filters:hover {
+.modal-body::-webkit-scrollbar-thumb {
   background-color: var(--primary-accent);
-  color: white;
+  border-radius: 3px;
 }
+
+.modal-body::-webkit-scrollbar-track {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+}
+
+
+  /* === UTILITY STYLES === */
+  .loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4rem;
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  .spinner {
+    width: 48px;
+    height: 48px;
+    border: 5px solid var(--border-color);
+    border-top-color: var(--primary-accent);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  .no-results {
+    text-align: center;
+    padding: 4rem 2rem;
+    background-color: var(--background-card);
+    border-radius: var(--border-radius);
+    margin-top: 2rem;
+  }
+  .no-results h3 {
+    font-size: 1.75rem;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+  }
+  .no-results p {
+    color: var(--text-medium);
+    margin-bottom: 1.5rem;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .btn-clear-filters {
+    background: transparent;
+    color: var(--primary-accent);
+    border: 1px solid var(--primary-accent);
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-clear-filters:hover {
+    background-color: var(--primary-accent);
+    color: white;
+  }

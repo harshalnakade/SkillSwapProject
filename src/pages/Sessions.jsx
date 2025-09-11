@@ -3,16 +3,39 @@ import { Link } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import { X, Star } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
-import { db, functions } from "../firebase"; 
+import { db } from "../firebase"; 
 import { collection, query, where, onSnapshot, doc, updateDoc, deleteDoc, addDoc, serverTimestamp } from "firebase/firestore";
 import "../styles/SessionsPage.css";
 
-// Modal for leaving a review (No changes here)
 const ReviewModal = ({ session, onClose }) => {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
+  const [reviews, setReviews] = useState([]);
   const { currentUser } = useAuth();
 
+  // Fetch reviews for this session
+  useEffect(() => {
+    if (!session?.id) return;
+
+    const q = query(
+      collection(db, "reviews"),
+      where("sessionId", "==", session.id)
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const sessionReviews = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setReviews(sessionReviews);
+    });
+
+    return () => unsubscribe();
+  }, [session]);
+
+  // Check if the current user has already reviewed this session
+  const hasReviewed = reviews.some(
+    (review) => review.learnerId === currentUser.uid
+  );
+
+  // Handle review submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (rating === 0) {
@@ -21,6 +44,7 @@ const ReviewModal = ({ session, onClose }) => {
     }
     try {
       await addDoc(collection(db, "reviews"), {
+        sessionId: session.id,           
         skillId: session.skillId,
         mentorId: session.mentorId,
         learnerId: currentUser.uid,
@@ -30,7 +54,8 @@ const ReviewModal = ({ session, onClose }) => {
         createdAt: serverTimestamp(),
       });
       alert("Thank you for your review!");
-      onClose();
+      setRating(0);
+      setComment("");
     } catch (error) {
       console.error("Error submitting review:", error);
       alert("Failed to submit review. Please try again.");
@@ -44,50 +69,97 @@ const ReviewModal = ({ session, onClose }) => {
         <h3>Leave a Review for</h3>
         <h2>{session.skillName}</h2>
         <p>with {session.mentorName}</p>
-        <form onSubmit={handleSubmit} className="review-form">
-          <div className="star-rating">
-            {[1, 2, 3, 4, 5].map(star => (
-              <Star 
-                key={star}
-                size={32}
-                className={star <= rating ? 'filled' : ''}
-                onClick={() => setRating(star)}
-              />
-            ))}
-          </div>
-          <textarea 
-            rows="4" 
-            placeholder="Share your experience..." 
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            required
-          />
-          <button type="submit" className="btn-primary">Submit Review</button>
-        </form>
+
+        {/* Review Form */}
+        {!hasReviewed ? (
+          <form onSubmit={handleSubmit} className="review-form">
+            <div className="star-rating">
+              {[1, 2, 3, 4, 5].map(star => (
+                <Star 
+                  key={star}
+                  size={32}
+                  className={star <= rating ? 'filled' : ''}
+                  onClick={() => setRating(star)}
+                />
+              ))}
+            </div>
+            <textarea 
+              rows="4" 
+              placeholder="Share your experience..." 
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              required
+            />
+            <button type="submit" className="btn-primary">Submit Review</button>
+          </form>
+        ) : (
+          <p style={{ marginTop: "1rem", color: "green", fontWeight: "600" }}>
+            You have already submitted a review for this session.
+          </p>
+        )}
+
+        {/* Existing Reviews */}
+        <div className="reviews-list" style={{ marginTop: "2rem" }}>
+          <h3>Reviews for this session</h3>
+          {reviews.length === 0 && <p>No reviews yet. Be the first to leave one!</p>}
+          {reviews.map(review => (
+            <div key={review.id} className="review-item">
+              <div className="review-header">
+                <span className="review-author">{review.learnerName}</span>
+                <span className="review-rating">{review.rating} ★</span>
+              </div>
+              <p className="review-comment">{review.comment}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
 };
 
-
-// The client-side status calculation logic (No changes here)
+// ====================== Helpers ======================
 const getDynamicStatus = (session) => {
   const { status, sessionTime } = session;
   if (!sessionTime || !sessionTime.toDate) {
     return status;
   }
   const sessionDate = sessionTime.toDate();
-  const hasPassed = sessionDate < new Date();
+  const now = new Date();
 
-  if (status === 'Upcoming' && hasPassed) {
-    return 'Completed';
+  if (status === "Upcoming" && now > sessionDate) {
+    return "Completed";
   }
-  if (status === 'Pending' && hasPassed) {
-    return 'Expired'; 
+  if (status === "Pending" && now > sessionDate) {
+    return "Expired"; 
   }
   return status;
 };
 
+// Countdown formatter (HH:MM:SS, MM:SS, or SS)
+const formatCountdown = (ms) => {
+  if (ms <= 0) return null;
+
+  const totalSeconds = Math.floor(ms / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  const parts = [];
+
+  if (hours > 0) {
+    parts.push(`${hours} hr${hours > 1 ? 's' : ''}`);
+  }
+  if (minutes > 0) {
+    parts.push(`${minutes} min`);
+  }
+  // Always show seconds if it's the only unit, or if it's not zero
+  if (seconds > 0 || parts.length === 0) {
+     parts.push(`${seconds} sec`);
+  }
+
+  return parts.join(' ');
+};
+// ====================== Main Component ======================
 export default function Sessions() {
   const { currentUser } = useAuth();
   const [sessions, setSessions] = useState([]);
@@ -95,6 +167,13 @@ export default function Sessions() {
   const [activeTab, setActiveTab] = useState("Upcoming");
   const [reviewingSession, setReviewingSession] = useState(null);
   const [loadingLink, setLoadingLink] = useState(null);
+  const [now, setNow] = useState(new Date()); // 👈 for countdowns
+
+  // update clock every second
+  useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     if (!currentUser) return;
@@ -104,18 +183,13 @@ export default function Sessions() {
     const learnerQuery = query(collection(db, "sessions"), where("learnerId", "==", currentUser.uid));
     const mentorQuery = query(collection(db, "sessions"), where("mentorId", "==", currentUser.uid));
 
-    // --- LOGIC CHANGE IS HERE ---
     const processSnapshot = (snapshot, userRole) => {
       const fetchedSessions = snapshot.docs.map(docSnapshot => {
         const data = docSnapshot.data();
         const originalStatus = data.status;
         const dynamicStatus = getDynamicStatus(data);
 
-        // **NEW:** If the calculated status is different, update the database.
         if (dynamicStatus !== originalStatus) {
-          console.log(`Updating session ${docSnapshot.id} from '${originalStatus}' to '${dynamicStatus}'`);
-          // We do this 'in the background' and don't wait for it.
-          // The onSnapshot listener will pick up the official change shortly.
           updateDoc(doc(db, "sessions", docSnapshot.id), { status: dynamicStatus });
         }
         
@@ -130,8 +204,8 @@ export default function Sessions() {
       setLoading(false);
     };
 
-    const unsubscribeLearner = onSnapshot(learnerQuery, (snapshot) => processSnapshot(snapshot, 'Learner'));
-    const unsubscribeMentor = onSnapshot(mentorQuery, (snapshot) => processSnapshot(snapshot, 'Mentor'));
+    const unsubscribeLearner = onSnapshot(learnerQuery, (snapshot) => processSnapshot(snapshot, "Learner"));
+    const unsubscribeMentor = onSnapshot(mentorQuery, (snapshot) => processSnapshot(snapshot, "Mentor"));
 
     return () => {
       unsubscribeLearner();
@@ -158,17 +232,17 @@ export default function Sessions() {
       const idToken = await currentUser.getIdToken();
       const functionUrl = "https://us-central1-skillswap-4fc40.cloudfunctions.net/generateMeetingLink";
       const response = await fetch(functionUrl, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${idToken}`
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${idToken}`
         },
         body: JSON.stringify({ data: { sessionId } })
       });
 
       if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.data.error || `HTTP error! status: ${response.status}`);
+        const errorData = await response.json();
+        throw new Error(errorData.data.error || `HTTP error! status: ${response.status}`);
       }
       const result = await response.json();
       if (result.data?.success) {
@@ -189,7 +263,7 @@ export default function Sessions() {
   const formatDate = (dateObject) => {
     if (!dateObject || !dateObject.toDate) return "Date TBD";
     return dateObject.toDate().toLocaleString("en-US", {
-      year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+      year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit"
     });
   };
 
@@ -204,65 +278,87 @@ export default function Sessions() {
 
         <div className="sessions-container">
           <div className="sessions-tabs">
-            <button className={`tab ${activeTab === "Upcoming" ? "active" : ""}`} onClick={() => setActiveTab("Upcoming")}>Upcoming</button>
-            <button className={`tab ${activeTab === "Pending" ? "active" : ""}`} onClick={() => setActiveTab("Pending")}>Pending</button>
-            <button className={`tab ${activeTab === "Completed" ? "active" : ""}`} onClick={() => setActiveTab("Completed")}>Completed</button>
-            <button className={`tab ${activeTab === "Expired" ? "active" : ""}`} onClick={() => setActiveTab("Expired")}>Expired</button>
+            {["Upcoming","Pending","Completed","Expired"].map(tab => (
+              <button
+                key={tab}
+                className={`tab ${activeTab === tab ? "active" : ""}`}
+                onClick={() => setActiveTab(tab)}
+              >
+                {tab}
+              </button>
+            ))}
           </div>
 
           <div className="sessions-list">
             {loading ? (
               <div className="loading-state">Loading sessions...</div>
             ) : filteredSessions.length > 0 ? (
-              filteredSessions.map((session) => (
-                <div key={session.id} className="session-item">
-                  <div className="session-details">
-                    <h3 className="session-skill">{session.skillName}</h3>
-                    <p className="session-participant">
-                      {session.userRole === 'Mentor' ? 'Mentoring' : 'Learning from'} <strong>{session.userRole === 'Mentor' ? session.learnerName : session.mentorName}</strong>
-                    </p>
-                  </div>
-                  <div className="session-meta">
-                    <span className="session-date">{formatDate(session.sessionTime)}</span>
-                    <span className="session-format">{session.format || 'Online'}</span>
-                  </div>
-                  <div className="session-status">
-                    <span className={`status-badge ${session.status.toLowerCase()}`}>{session.status}</span>
-                  </div>
+              filteredSessions.map((session) => {
+                const start = session.sessionTime?.toDate();
+                const end = start ? new Date(start.getTime() + (session.durationMinutes || 60) * 60000) : null;
+                const joinWindowStart = start ? new Date(start.getTime() - 10 * 60000) : null;
+                const canJoin = session.meetingLink && start && now >= joinWindowStart && now <= end;
+                const countdownMs = start ? start.getTime() - now.getTime() : null;
 
-                  {/* Conditional Actions Buttons */}
-                  <div className="session-actions">
-                    {session.status === 'Pending' && session.userRole === 'Mentor' && (
-                      <>
-                        <button className="btn-secondary" onClick={() => handleDecline(session.id)}>Decline</button>
-                        <button className="btn-primary" onClick={() => handleAccept(session.id)}>Accept</button>
-                      </>
-                    )}
+                return (
+                  <div key={session.id} className="session-item">
+                    <div className="session-details">
+                      <h3 className="session-skill">{session.skillName}</h3>
+                      <p className="session-participant">
+                        {session.userRole === "Mentor" ? "Mentoring" : "Learning from"}{" "}
+                        <strong>{session.userRole === "Mentor" ? session.learnerName : session.mentorName}</strong>
+                      </p>
+                    </div>
+                    <div className="session-meta">
+                      <span className="session-date">{formatDate(session.sessionTime)}</span>
+                      <span className="session-format">{session.format || "Online"}</span>
+                    </div>
+                    <div className="session-status">
+                      <span className={`status-badge ${session.status.toLowerCase()}`}>{session.status}</span>
+                    </div>
 
-                    {session.status === 'Upcoming' && session.userRole === 'Mentor' && !session.meetingLink && (
-                      <button
-                        className="btn-primary"
-                        disabled={loadingLink === session.id}
-                        onClick={() => handleCreateMeetingLink(session.id)}
-                      >
-                        {loadingLink === session.id ? "Creating..." : "Create Meeting Link"}
-                      </button>
-                    )}
+                    {/* Action buttons */}
+                    <div className="session-actions">
+                      {session.status === "Pending" && session.userRole === "Mentor" && (
+                        <>
+                          <button className="btn-secondary" onClick={() => handleDecline(session.id)}>Decline</button>
+                          <button className="btn-primary" onClick={() => handleAccept(session.id)}>Accept</button>
+                        </>
+                      )}
 
-                    {session.status === 'Upcoming' && session.meetingLink && (
-                      <a href={session.meetingLink} target="_blank" rel="noopener noreferrer" className="btn-primary">
-                        Join Session
-                      </a>
-                    )}
+                      {session.status === "Upcoming" && session.userRole === "Mentor" && !session.meetingLink && (
+                        <button
+                          className="btn-primary"
+                          disabled={loadingLink === session.id}
+                          onClick={() => handleCreateMeetingLink(session.id)}
+                        >
+                          {loadingLink === session.id ? "Creating..." : "Create Meeting Link"}
+                        </button>
+                      )}
 
-                    {session.status === 'Completed' && session.userRole === 'Learner' && (
-                      <button className="btn-primary" onClick={() => setReviewingSession(session)}>
-                        Leave a Review
-                      </button>
-                    )}
+                      {session.status === "Upcoming" && session.meetingLink && (
+                        <>
+                          {canJoin ? (
+                            <a href={session.meetingLink} target="_blank" rel="noopener noreferrer" className="btn-primary">
+                              Join Session
+                            </a>
+                          ) : (
+                            <button className="btn-disabled" disabled>
+                              {countdownMs > 0 ? `Join available in ${formatCountdown(countdownMs)}` : "Link expired"}
+                            </button>
+                          )}
+                        </>
+                      )}
+
+                      {session.status === "Completed" && session.userRole === "Learner" && (
+                        <button className="btn-primary" onClick={() => setReviewingSession(session)}>
+                          Leave a Review
+                        </button>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))
+                );
+              })
             ) : (
               <div className="no-sessions">
                 <p>You have no {activeTab.toLowerCase()} sessions.</p>

@@ -8,60 +8,72 @@ const AuthContext = createContext();
 
 // Create a custom hook to use the context easily
 export function useAuth() {
-  return useContext(AuthContext);
+  return useContext(AuthContext);
 }
 
 // Create the provider component
 export function AuthProvider({ children }) {
-  const [currentUser, setCurrentUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      try {
-        if (user) {
-          // User is logged in. Keep the original Firebase user object.
-          // This object has all the necessary auth methods like getIdToken().
+  const refreshUser = async () => {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    try {
+      const userDocRef = doc(db, 'users', user.uid);
+      const userDocSnap = await getDoc(userDocRef);
+      
+      const authUser = { ...user };
+
+      if (userDocSnap.exists()) {
+        authUser.customData = userDocSnap.data();
+      }
+      
+      setCurrentUser(authUser);
+
+    } catch (error) {
+      console.error("Failed to refresh user data:", error);
+    }
+  };
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      try {
+        if (user) {
           const authUser = user;
+          const userDocRef = doc(db, 'users', user.uid);
+          const userDocSnap = await getDoc(userDocRef);
 
-          // Now, fetch their custom data from Firestore.
-          const userDocRef = doc(db, 'users', user.uid);
-          const userDocSnap = await getDoc(userDocRef);
-
-          if (userDocSnap.exists()) {
-            // Attach the Firestore data as a new property.
-            // This avoids destroying the original authUser object.
+          if (userDocSnap.exists()) {
             authUser.customData = userDocSnap.data();
-          }
+          }
           
-          // Set the complete user object (with auth methods and custom data) in state.
           setCurrentUser(authUser);
 
-        } else {
-          // User is signed out
-          setCurrentUser(null);
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-        setCurrentUser(null); // Log out user on error to be safe
-      } finally {
-        setLoading(false);
-      }
-    });
+        } else {
+          setCurrentUser(null);
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        setCurrentUser(null);
+      } finally {
+        setLoading(false);
+      }
+    });
 
-    // Cleanup the listener when the component unmounts
-    return unsubscribe;
-  }, []);
+    return unsubscribe;
+  }, []);
 
-  const value = {
-    currentUser,
-    loading,
-  };
+  const value = {
+    currentUser,
+    loading,
+    refreshUser,
+  };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {!loading && children}
-    </AuthContext.Provider>
-  );
+  return (
+    <AuthContext.Provider value={value}>
+      {!loading && children}
+    </AuthContext.Provider>
+  );
 }
-

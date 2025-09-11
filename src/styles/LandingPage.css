@@ -2,22 +2,40 @@
 
 /* === VARIABLES & GLOBAL STYLES === */
 :root {
-  --primary-blue: #2563eb;
-  --primary-blue-dark: #1d4ed8;
-  --primary-emerald: #10b981;
-  --primary-purple: #7c3aed;
-  --primary-yellow: #f59e0b;
-  --neutral-darkest: #0f172a;
-  --neutral-dark: #1e293b;
-  --neutral-medium: #64748b;
-  --neutral-light: #f1f5f9;
-  --border-color: #e2e8f0;
-  --background-white: #ffffff;
+  /* === WINE COLOR PALETTE === */
+  --wine-deep: #4a0e2e;       /* Deep wine (sidebar bg, accents) */
+  --wine-rich: #7b1e3a;       /* Rich wine red (hover, highlights) */
+  --wine-soft: #a53860;       /* Softer wine tone (buttons, accents) */
+  --wine-blush: #d72638;      /* Bright wine blush (alerts, accents) */
+  --wine-rose: #f7d6e0;       /* Light rose (backgrounds, text contrast) */
+
+  /* === THEME MAPPING === */
+  --primary-accent: var(--wine-soft);
+  --primary-accent-dark: var(--wine-deep);
+  --primary-accent-hover: var(--wine-rich);
+
+  --background-body: #faf6f8; /* soft light backdrop */
+  --background-card: #ffffff;
+  --background-hover: #fdf0f4;
+
+  --text-dark: var(--wine-deep);
+  --text-medium: var(--wine-rich);
+  --text-light: var(--wine-soft);
   --text-white: #ffffff;
-  --font-sans: 'Inter', sans-serif;
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+  --border-color: rgba(122, 30, 58, 0.2);
+
+  /* === TYPOGRAPHY === */
+  --font-sans: 'Inter', system-ui, sans-serif;
+
+  /* === SHADOWS & RADIUS === */
+  --border-radius: 14px;
+  --shadow-md: 0 4px 6px -1px rgba(122, 30, 58, 0.15),
+               0 2px 4px -2px rgba(74, 14, 46, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(122, 30, 58, 0.2),
+               0 4px 6px -4px rgba(74, 14, 46, 0.15);
 }
+
 
 html {
   scroll-behavior: smooth;

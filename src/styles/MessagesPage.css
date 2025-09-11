@@ -2,28 +2,35 @@
 :root {
   /* === NEW EARTHY COLOR PALETTE === */
   --c1-dusty-rose: #a46a64;
+  --c1-dusty-rose-dark: #8c5a54; /* Darker shade for hovers/active states */
   --c2-khaki: #997a53;
   --c3-muted-gold: #a28d66;
   --c4-light-taupe: #b1a389;
   --c5-pale-sage: #cdc6a7;
+  --c6-warm-ivory: #f7f5f1;   /* Added for main background */
+  --c7-light-ivory: #faf9f7;  /* Added for hover states */
 
   /* === THEME MAPPING === */
   --primary-accent: var(--c1-dusty-rose);
-  --primary-accent-dark: #8c5a54;
-  --background-body: #f7f5f1;
+  --primary-accent-dark: var(--c1-dusty-rose-dark);
+  --background-body: var(--c6-warm-ivory);
   --background-card: #ffffff;
-  --background-hover: #faf9f7;
+  --background-hover: var(--c7-light-ivory);
   --text-dark: var(--c2-khaki);
   --text-medium: var(--c3-muted-gold);
   --text-light: var(--c4-light-taupe);
   --text-white: #ffffff;
-  --border-color: rgba(177, 163, 137, 0.3);
+  --border-color: rgba(177, 163, 137, 0.3); /* Derived from Light Taupe */
+
+  /* === UI & TYPOGRAPHY === */
   --font-sans: 'Inter', system-ui, sans-serif;
   --border-radius: 16px;
+  --shadow-lg: 0 10px 20px -5px rgba(153, 122, 83, 0.15); /* Soft shadow from Khaki */
+  
+  /* === LAYOUT === */
   --sidebar-width-collapsed: 88px;
   --sidebar-width-full: 260px;
 }
-
 /* === GENERAL LAYOUT === */
 .messages-page-container {
   font-family: var(--font-sans);
@@ -35,7 +42,7 @@
   overflow: hidden;
   margin-left: var(--sidebar-width-full);
   transition: margin-left 0.3s ease-in-out;
-  width:100%;
+  width:80vw;
 }
 body.sidebar-collapsed .messages-main-content {
     margin-left: var(--sidebar-width-collapsed);

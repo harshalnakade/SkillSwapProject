@@ -5,7 +5,7 @@ import EditProfileModal from "../components/EditProfileModal";
 import { MapPin, Calendar, Star, Edit, Trash2 } from 'lucide-react';
 import { useAuth } from "../context/AuthContext";
 import { db } from "../firebase";
-import { collection, query, where, onSnapshot, doc, deleteDoc, getDocs } from "firebase/firestore";
+import { collection, query, where, onSnapshot, doc, deleteDoc } from "firebase/firestore";
 import "../styles/ProfilePage.css";
 
 export default function ProfilePage() {
@@ -13,59 +13,68 @@ export default function ProfilePage() {
   const navigate = useNavigate();
   const [editOpen, setEditOpen] = useState(false);
   
-  // State for all live data sections
   const [mySkills, setMySkills] = useState([]);
   const [sessionHistory, setSessionHistory] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [stats, setStats] = useState({ taught: 0, attended: 0, rating: "New" });
 
-  // Single loading state for the page
   const [loading, setLoading] = useState(true);
 
-  // Effect to fetch all necessary data for the profile
   useEffect(() => {
     if (!currentUser) return;
     
     setLoading(true);
 
-    // Fetch user's offered skills
+    // --- Unsubscribers for cleanup ---
+    const unsubscribers = [];
+
+    // Fetch user's offered skills in real-time
     const skillsQuery = query(collection(db, "skills"), where("teacherId", "==", currentUser.uid));
-    const unsubscribeSkills = onSnapshot(skillsQuery, (snapshot) => {
-      setMySkills(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-    });
+    unsubscribers.push(
+      onSnapshot(skillsQuery, (snapshot) => {
+        setMySkills(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      })
+    );
 
-    // NEW & IMPROVED: Fetch sessions with two separate queries and merge them
-    const fetchSessions = async () => {
-        const mentorQuery = query(collection(db, "sessions"), where("mentorId", "==", currentUser.uid));
-        const learnerQuery = query(collection(db, "sessions"), where("learnerId", "==", currentUser.uid));
+    // --- UPDATED: Fetch all sessions (as mentor and learner) in real-time ---
+    const mentorQuery = query(collection(db, "sessions"), where("mentorId", "==", currentUser.uid));
+    const learnerQuery = query(collection(db, "sessions"), where("learnerId", "==", currentUser.uid));
 
-        const mentorSnap = await getDocs(mentorQuery);
-        const learnerSnap = await getDocs(learnerQuery);
+    let mentorSessions = [];
+    let learnerSessions = [];
 
-        const mentorSessions = mentorSnap.docs.map(doc => ({ id: doc.id, ...doc.data(), userRole: 'Mentor' }));
-        const learnerSessions = learnerSnap.docs.map(doc => ({ id: doc.id, ...doc.data(), userRole: 'Learner' }));
-
-        // Combine and remove duplicates (in case a user somehow mentored themselves)
-        const allSessions = [...mentorSessions, ...learnerSessions];
-        const uniqueSessions = Array.from(new Map(allSessions.map(item => [item.id, item])).values());
-        
-        setSessionHistory(uniqueSessions);
+    const combineSessions = () => {
+      const allSessions = [...mentorSessions, ...learnerSessions];
+      const uniqueSessions = Array.from(new Map(allSessions.map(item => [item.id, item])).values());
+      setSessionHistory(uniqueSessions);
     };
 
-    fetchSessions(); // Call the async function
+    unsubscribers.push(
+      onSnapshot(mentorQuery, (snapshot) => {
+        mentorSessions = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data(), userRole: 'Mentor' }));
+        combineSessions();
+      })
+    );
+
+    unsubscribers.push(
+      onSnapshot(learnerQuery, (snapshot) => {
+        learnerSessions = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data(), userRole: 'Learner' }));
+        combineSessions();
+      })
+    );
     
-    // Fetch reviews for the current user (where they were the mentor)
+    // Fetch reviews for the current user in real-time
     const reviewsQuery = query(collection(db, "reviews"), where("mentorId", "==", currentUser.uid));
-    const unsubscribeReviews = onSnapshot(reviewsQuery, (snapshot) => {
+    unsubscribers.push(
+      onSnapshot(reviewsQuery, (snapshot) => {
         setReviews(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-    });
+      })
+    );
 
-    setLoading(false); // All listeners are set up
+    setLoading(false);
 
-    return () => {
-      unsubscribeSkills();
-      unsubscribeReviews();
-    };
+    // Cleanup all listeners on component unmount
+    return () => unsubscribers.forEach(unsub => unsub());
   }, [currentUser]);
   
   // Effect to calculate stats whenever session or review data changes
@@ -92,7 +101,6 @@ export default function ProfilePage() {
     }
   };
 
-  // UPDATED: Access 'memberSince' from customData
   const memberSinceDate = currentUser?.customData?.memberSince?.toDate
       ? currentUser.customData.memberSince.toDate().toLocaleDateString("en-US", { month: 'long', year: 'numeric' })
       : "Not available";
@@ -116,13 +124,12 @@ export default function ProfilePage() {
           <div className="profile-banner"></div>
           <div className="profile-details-wrapper">
             <div className="profile-avatar-container">
-                {/* UPDATED: Access 'avatar' and 'name' from customData, with fallbacks to auth object */}
+              {/* This logic is correct and will display the avatar from Firebase */}
               <img className="profile-avatar" src={currentUser.customData?.avatar || currentUser.photoURL || 'https://via.placeholder.com/150'} alt={currentUser.customData?.name || currentUser.displayName} />
             </div>
             <div className="profile-info">
               <h1 className="user-name">{currentUser.customData?.name || currentUser.displayName}</h1>
               <div className="user-meta">
-                {/* UPDATED: Access 'location' from customData */}
                 {currentUser.customData?.location && <span><MapPin size={16} /> {currentUser.customData.location}</span>}
                 <span><Calendar size={16} /> Member since {memberSinceDate}</span>
               </div>
@@ -141,7 +148,6 @@ export default function ProfilePage() {
           <div className="profile-left-column">
             <div className="profile-card">
               <h2 className="card-title">About Me</h2>
-              {/* UPDATED: Access 'bio' from customData */}
               <p className="user-bio">{currentUser.customData?.bio || "No bio added yet. Click 'Edit Profile' to tell the community about yourself."}</p>
             </div>
             
@@ -151,19 +157,17 @@ export default function ProfilePage() {
                 <div className="my-skills-list">
                   {mySkills.map((skill) => (
                     <div key={skill.id} className="my-skill-item">
-                      <div className="skill-badge">
-                        <span className="skill-name">{skill.skillName}</span>
-                        <span className={`skill-level ${skill.level.toLowerCase()}`}>{skill.level}</span>
-                      </div>
+                      <span className="skill-name">{skill.skillName}</span>
                       <div className="skill-actions">
-                        <button onClick={() => navigate(`/offer-skill/edit/${skill.id}`)} className="btn-icon"><Edit size={18} /> <span>Edit</span></button>
-                        <button onClick={() => handleDeleteSkill(skill.id)} className="btn-icon btn-delete"><Trash2 size={18} /> <span>Delete</span></button>
+                        <span className={`skill-level ${skill.level?.toLowerCase()}`}>{skill.level}</span>
+                        <button onClick={() => navigate(`/offer-skill/edit/${skill.id}`)} className="btn-icon"><Edit size={16} /></button>
+                        <button onClick={() => handleDeleteSkill(skill.id)} className="btn-icon btn-delete"><Trash2 size={16} /></button>
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="empty-state-text">You haven't offered any skills yet. Click "Offer a New Skill" in the sidebar to get started!</p>
+                <p className="empty-state-text">You haven't offered any skills yet!</p>
               )}
             </div>
           </div>
@@ -173,33 +177,44 @@ export default function ProfilePage() {
                 <h2 className="card-title">Session History</h2>
                 {sessionHistory.length > 0 ? (
                     <ul className="sessions-list">
-                        {sessionHistory.slice(0, 5).map((session) => ( // Show latest 5
-                        <li key={session.id} className="session-item">
-                            <div className={`status-dot ${session.status.toLowerCase()}`}></div>
-                            <div className="session-info">
-                                <span className="session-title">{session.skillName}</span>
-                                <span className="session-date">
-                                    {session.sessionTime?.toDate().toLocaleDateString("en-US", { month: 'short', day: 'numeric' })}
-                                </span>
-                            </div>
-                        </li>
+                        {/* UPDATED: Sort by date to show the most recent sessions first */}
+                        {sessionHistory
+                          .sort((a, b) => b.sessionTime.toMillis() - a.sessionTime.toMillis())
+                          .slice(0, 5)
+                          .map((session) => (
+                          <li key={session.id} className="session-item">
+                              <div className={`status-dot ${session.status?.toLowerCase()}`}></div>
+                              <div className="session-info">
+                                  <span className="session-title">
+                                    {session.skillName} with <strong>{session.userRole === 'Mentor' ? session.learnerName : session.mentorName}</strong>
+                                  </span>
+                                  <span className="session-date">
+                                      {session.sessionTime?.toDate().toLocaleDateString("en-IN", { month: 'short', day: 'numeric' })}
+                                  </span>
+                              </div>
+                          </li>
                         ))}
                     </ul>
                 ) : <p className="empty-state-text">Your session history will appear here.</p>}
             </div>
             <div className="profile-card">
-                <h2 className="card-title">Reviews</h2>
+                <h2 className="card-title">Latest Reviews</h2>
                 {reviews.length > 0 ? (
                     <div className="reviews-container">
-                        {reviews.slice(0, 3).map(review => ( // Show latest 3
+                        {reviews.slice(0, 3).map(review => (
                             <div key={review.id} className="review-item">
-                                <img src={review.learnerAvatar || 'https://via.placeholder.com/150'} alt={review.learnerName} className="reviewer-avatar" />
-                                <div className="review-content">
-                                    <p className="review-quote">"{review.comment}"</p>
-                                    <div className="reviewer-info">
-                                        <span>- {review.learnerName}</span>
-                                    </div>
+                                <div className="review-header">
+                                  <div className="reviewer-info">
+                                    <img src={review.learnerAvatar || 'https://via.placeholder.com/150'} alt={review.learnerName} className="reviewer-avatar" />
+                                    <span>{review.learnerName}</span>
+                                  </div>
+                                  {/* UPDATED: Added the star rating to each review */}
+                                  <div className="review-rating">
+                                    <Star size={16} className="star-icon"/>
+                                    <span>{review.rating}</span>
+                                  </div>
                                 </div>
+                                <p className="review-quote">"{review.comment}"</p>
                             </div>
                         ))}
                     </div>
@@ -208,8 +223,11 @@ export default function ProfilePage() {
           </div>
         </div>
       </main>
-      <EditProfileModal isOpen={editOpen} onClose={() => setEditOpen(false)} />
+      
+      {/* This ensures the modal is only in the DOM when needed */}
+      {editOpen && (
+        <EditProfileModal isOpen={editOpen} onClose={() => setEditOpen(false)} />
+      )}
     </div>
   );
 }
-

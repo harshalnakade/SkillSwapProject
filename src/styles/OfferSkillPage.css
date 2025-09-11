@@ -1,29 +1,30 @@
 /* === VARIABLES & GLOBAL STYLES === */
 :root {
-  /* === NEW EARTHY COLOR PALETTE === */
-  --c1-dusty-rose: #a46a64;
-  --c2-khaki: #997a53;
-  --c3-muted-gold: #a28d66;
-  --c4-light-taupe: #b1a389;
-  --c5-pale-sage: #cdc6a7;
+  /* === NEW WINE NEUTRAL COLOR PALETTE === */
+  --c1-wine: #8f194c;         /* Wine Primary */
+  --c2-wine-dark: #6a1239;    /* Darker Wine */
+  --c3-soft-wine: #fce7ef;    /* Soft Tint for hovers/backgrounds */
+  --c4-gray-dark: #2c2c2c;    /* Main dark text */
+  --c5-gray-medium: #5a5a5a;  /* Medium neutral text */
 
   /* === THEME MAPPING === */
-  --primary-accent: var(--c1-dusty-rose);
-  --primary-accent-dark: #8c5a54;
-  --background-body: #f7f5f1;
+  --primary-accent: var(--c1-wine);
+  --primary-accent-dark: var(--c2-wine-dark);
+  --background-body: #ffffff;
   --background-card: #ffffff;
-  --background-hover: #faf9f7;
-  --text-dark: var(--c2-khaki);
-  --text-medium: var(--c3-muted-gold);
-  --text-light: var(--c4-light-taupe);
+  --background-hover: var(--c3-soft-wine);
+  --text-dark: var(--c4-gray-dark);
+  --text-medium: var(--c5-gray-medium);
+  --text-light: #9ca3af; /* lighter muted text */
   --text-white: #ffffff;
-  --border-color: rgba(177, 163, 137, 0.3);
+  --border-color: #e5e5e5;
   --font-sans: 'Inter', system-ui, sans-serif;
   --border-radius: 16px;
-  --shadow-lg: 0 8px 16px -4px rgba(153, 122, 83, 0.1);
+  --shadow-lg: 0 8px 16px -4px rgba(143, 25, 76, 0.15); /* Wine tint shadow */
   --sidebar-width-collapsed: 88px;
   --sidebar-width-full: 260px;
 }
+
 
 /* === GENERAL LAYOUT & HEADER === */
 .offer-skill-page-container {
