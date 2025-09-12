@@ -21,11 +21,12 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!currentUser) return;
+    if (!currentUser) {
+      setLoading(false);
+      return;
+    }
     
     setLoading(true);
-
-    // --- Unsubscribers for cleanup ---
     const unsubscribers = [];
 
     // Fetch user's offered skills in real-time
@@ -36,7 +37,7 @@ export default function ProfilePage() {
       })
     );
 
-    // --- UPDATED: Fetch all sessions (as mentor and learner) in real-time ---
+    // Fetch all sessions (as mentor and learner) in real-time
     const mentorQuery = query(collection(db, "sessions"), where("mentorId", "==", currentUser.uid));
     const learnerQuery = query(collection(db, "sessions"), where("learnerId", "==", currentUser.uid));
 
@@ -49,31 +50,26 @@ export default function ProfilePage() {
       setSessionHistory(uniqueSessions);
     };
 
-    unsubscribers.push(
-      onSnapshot(mentorQuery, (snapshot) => {
-        mentorSessions = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data(), userRole: 'Mentor' }));
-        combineSessions();
-      })
-    );
+    unsubscribers.push(onSnapshot(mentorQuery, (snapshot) => {
+      mentorSessions = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data(), userRole: 'Mentor' }));
+      combineSessions();
+    }));
 
-    unsubscribers.push(
-      onSnapshot(learnerQuery, (snapshot) => {
-        learnerSessions = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data(), userRole: 'Learner' }));
-        combineSessions();
-      })
-    );
+    unsubscribers.push(onSnapshot(learnerQuery, (snapshot) => {
+      learnerSessions = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data(), userRole: 'Learner' }));
+      combineSessions();
+    }));
     
     // Fetch reviews for the current user in real-time
     const reviewsQuery = query(collection(db, "reviews"), where("mentorId", "==", currentUser.uid));
-    unsubscribers.push(
-      onSnapshot(reviewsQuery, (snapshot) => {
-        setReviews(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-      })
-    );
+    unsubscribers.push(onSnapshot(reviewsQuery, (snapshot) => {
+      const reviewsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      // Sort reviews by creation date, newest first
+      reviewsData.sort((a, b) => b.createdAt?.toMillis() - a.createdAt?.toMillis());
+      setReviews(reviewsData);
+    }));
 
     setLoading(false);
-
-    // Cleanup all listeners on component unmount
     return () => unsubscribers.forEach(unsub => unsub());
   }, [currentUser]);
   
@@ -88,31 +84,30 @@ export default function ProfilePage() {
       setStats({ taught: taughtCount, attended: attendedCount, rating: avgRating });
   }, [sessionHistory, reviews]);
 
-
   const handleDeleteSkill = async (skillId) => {
     if (window.confirm("Are you sure you want to delete this skill? This action cannot be undone.")) {
-        try {
-            await deleteDoc(doc(db, "skills", skillId));
-            alert("Skill deleted successfully.");
-        } catch (error) {
-            console.error("Error deleting skill:", error);
-            alert("Failed to delete skill.");
-        }
+      try {
+        await deleteDoc(doc(db, "skills", skillId));
+        alert("Skill deleted successfully.");
+      } catch (error) {
+        console.error("Error deleting skill:", error);
+        alert("Failed to delete skill.");
+      }
     }
   };
 
-  const memberSinceDate = currentUser?.customData?.memberSince?.toDate
+  const memberSinceDate = currentUser?.customData?.memberSince?.toDate()
       ? currentUser.customData.memberSince.toDate().toLocaleDateString("en-US", { month: 'long', year: 'numeric' })
       : "Not available";
 
   if (loading || !currentUser) {
     return (
-        <div className="profile-page-container">
-            <Sidebar />
-            <main className="profile-main-content main-content-area">
-                <div className="loading-state">Loading Profile...</div>
-            </main>
-        </div>
+      <div className="profile-page-container">
+        <Sidebar />
+        <main className="profile-main-content main-content-area">
+          <div className="loading-state">Loading Profile...</div>
+        </main>
+      </div>
     );
   }
 
@@ -124,7 +119,6 @@ export default function ProfilePage() {
           <div className="profile-banner"></div>
           <div className="profile-details-wrapper">
             <div className="profile-avatar-container">
-              {/* This logic is correct and will display the avatar from Firebase */}
               <img className="profile-avatar" src={currentUser.customData?.avatar || currentUser.photoURL || 'https://via.placeholder.com/150'} alt={currentUser.customData?.name || currentUser.displayName} />
             </div>
             <div className="profile-info">
@@ -166,20 +160,17 @@ export default function ProfilePage() {
                     </div>
                   ))}
                 </div>
-              ) : (
-                <p className="empty-state-text">You haven't offered any skills yet!</p>
-              )}
+              ) : ( <p className="empty-state-text">You haven't offered any skills yet!</p> )}
             </div>
           </div>
 
           <div className="profile-right-column">
              <div className="profile-card">
-                <h2 className="card-title">Session History</h2>
+                <h2 className="card-title">Recent Session History</h2>
                 {sessionHistory.length > 0 ? (
                     <ul className="sessions-list">
-                        {/* UPDATED: Sort by date to show the most recent sessions first */}
                         {sessionHistory
-                          .sort((a, b) => b.sessionTime.toMillis() - a.sessionTime.toMillis())
+                          .sort((a, b) => b.sessionTime?.toMillis() - a.sessionTime?.toMillis())
                           .slice(0, 5)
                           .map((session) => (
                           <li key={session.id} className="session-item">
@@ -205,10 +196,9 @@ export default function ProfilePage() {
                             <div key={review.id} className="review-item">
                                 <div className="review-header">
                                   <div className="reviewer-info">
-                                    <img src={review.learnerAvatar || 'https://via.placeholder.com/150'} alt={review.learnerName} className="reviewer-avatar" />
+                                    <img src={review.learnerAvatar || `https://api.dicebear.com/7.x/initials/svg?seed=${review.learnerName}`} alt={review.learnerName} className="reviewer-avatar" />
                                     <span>{review.learnerName}</span>
                                   </div>
-                                  {/* UPDATED: Added the star rating to each review */}
                                   <div className="review-rating">
                                     <Star size={16} className="star-icon"/>
                                     <span>{review.rating}</span>
@@ -224,10 +214,7 @@ export default function ProfilePage() {
         </div>
       </main>
       
-      {/* This ensures the modal is only in the DOM when needed */}
-      {editOpen && (
-        <EditProfileModal isOpen={editOpen} onClose={() => setEditOpen(false)} />
-      )}
+      {editOpen ? <EditProfileModal isOpen={editOpen} onClose={() => setEditOpen(false)} /> : null}
     </div>
   );
 }

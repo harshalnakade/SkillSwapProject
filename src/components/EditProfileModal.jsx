@@ -57,33 +57,33 @@ export default function EditProfileModal({ isOpen, onClose }) {
     setFormData(prev => ({ ...prev, avatar: url }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!currentUser) return;
-    setIsLoading(true);
-    try {
-      const userDocRef = doc(db, "users", currentUser.uid);
-      const updatedCustomData = {
-        ...currentUser.customData,
-        name: formData.name,
-        bio: formData.bio,
-        location: formData.location,
-        avatar: formData.avatar,
-      };
-      await updateDoc(userDocRef, { customData: updatedCustomData });
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!currentUser) return;
+  setIsLoading(true);
+  try {
+    const userDocRef = doc(db, "users", currentUser.uid);
 
-      if (refreshUser) {
-        await refreshUser();
-      }
-      alert("Profile updated successfully!");
-      handleClose();
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      alert("Failed to update profile. Please try again.");
-    } finally {
-      setIsLoading(false);
+    // UPDATED: This saves the fields directly to the document
+    await updateDoc(userDocRef, {
+      name: formData.name,
+      bio: formData.bio,
+      location: formData.location,
+      avatar: formData.avatar,
+    });
+
+    if (refreshUser) {
+      await refreshUser();
     }
-  };
+    alert("Profile updated successfully!");
+    handleClose();
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    alert("Failed to update profile. Please try again.");
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   return (
     <div className={`modal-overlay ${isClosing ? 'closing' : ''}`} onClick={handleClose}>

@@ -49,11 +49,10 @@ const SkillDetailModal = ({ skill, onClose }) => {
             currentUser.displayName || "User",
             skill.teacherName,
           ],
-          participantAvatars: [
-            currentUser.photoURL ||
-              `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentUser.uid}`,
-            skill.teacherAvatar,
-          ],
+         participantAvatars: [
+  currentUser.customData?.avatar || currentUser.photoURL || `https://api.dicebear.com/7.x/initials/svg?seed=${currentUser.uid}`,
+  skill.teacherAvatar,
+],
           topic: skill.skillName,
           skillId: skill.id,
           lastMessage: "Conversation started.",

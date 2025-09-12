@@ -73,7 +73,7 @@ export default function LandingPage() {
                     <div className="skill-category-card"><Code size={40} /><h4>Programming</h4></div>
                     <div className="skill-category-card"><BarChart size={40} /><h4>Interview Prep</h4></div>
                     <div className="skill-category-card"><Palette size={40} /><h4>UI/UX Design</h4></div>
-                    <div className="skill-category-card"><Music size={40} /><h4>Career Guidance</h4></div>
+                    <div className="skill-category-card"><Music size={40} /><h4>Dance</h4></div>
                 </div>
             </div>
         </section>
