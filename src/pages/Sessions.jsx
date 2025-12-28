@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
+import { addDoc, collection, deleteDoc, doc, onSnapshot, query, serverTimestamp, updateDoc, where } from "firebase/firestore";
+import { Star, X } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
-import { X, Star } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
-import { db } from "../firebase"; 
-import { collection, query, where, onSnapshot, doc, updateDoc, deleteDoc, addDoc, serverTimestamp } from "firebase/firestore";
+import { db } from "../firebase";
 import "../styles/SessionsPage.css";
 
 const ReviewModal = ({ session, onClose }) => {
@@ -296,8 +296,7 @@ export default function Sessions() {
               filteredSessions.map((session) => {
                 const start = session.sessionTime?.toDate();
                 const end = start ? new Date(start.getTime() + (session.durationMinutes || 60) * 60000) : null;
-                const joinWindowStart = start ? new Date(start.getTime() - 10 * 60000) : null;
-                const canJoin = session.meetingLink && start && now >= joinWindowStart && now <= end;
+                const joinWindowStart = start ? new Date(start.getTime() - 60 * 60000) : null;                const canJoin = session.meetingLink && start && now >= joinWindowStart && now <= end;
                 const countdownMs = start ? start.getTime() - now.getTime() : null;
 
                 return (
